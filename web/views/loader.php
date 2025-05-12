@@ -68,26 +68,85 @@ $encryptionKey = $_SESSION['encryption_key'];
                     </div>
                     
                     <hr class="my-3">
-                    <h5 class="mb-3"><i class="fas fa-shield-alt me-2 text-danger"></i>Advanced Protection</h5>
-                    
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="anti_logger" name="anti_logger">
-                        <label class="form-check-label" for="anti_logger">
-                            <i class="fas fa-eye-slash me-2 text-primary"></i>Anti-Logger Protection
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Prevents logging of sensitive data and detects runtime logging attempts.
-                        </small>
+                    <div class="security-options-section">
+                        <h5 class="mb-3"><i class="fas fa-shield-alt me-2 text-danger"></i>Advanced Protection</h5>
+                        
+                        <div class="junk-code-option mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="anti_logger" name="anti_logger">
+                                <label class="form-check-label" for="anti_logger">
+                                    <i class="fas fa-eye-slash me-2 text-warning"></i><strong>Anti-Logger Protection</strong>
+                                </label>
+                                <small class="form-text text-muted d-block mt-1">
+                                    Prevents logging of sensitive data and detects runtime logging attempts.
+                                    This helps protect your code against information leakage and debug probing.
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="junk-code-option mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="anti_debugger" name="anti_debugger">
+                                <label class="form-check-label" for="anti_debugger">
+                                    <i class="fas fa-bug-slash me-2 text-danger"></i><strong>Anti-Debugger Protection</strong>
+                                </label>
+                                <small class="form-text text-muted d-block mt-1">
+                                    Adds code to detect and prevent debugging and analysis tools.
+                                    Monitors execution timing and prevents step-by-step code analysis.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="junk-code-option mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="junk_code" name="junk_code" checked>
+                                <label class="form-check-label" for="junk_code">
+                                    <i class="fas fa-random me-2 text-success"></i><strong>Junk Code Injection</strong>
+                                </label>
+                                <small class="form-text text-muted d-block mt-1">
+                                    Adds decoy functions and misleading code to make reverse-engineering more difficult.
+                                    This creates fake cryptographic operations and code paths to confuse analysis tools.
+                                </small>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="anti_debugger" name="anti_debugger">
-                        <label class="form-check-label" for="anti_debugger">
-                            <i class="fas fa-bug-slash me-2 text-primary"></i>Anti-Debugger Protection
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Adds code to detect and prevent debugging and analysis tools.
-                        </small>
+                    <hr class="my-3">
+                    <div class="fingerprinting-section">
+                        <h5 class="mb-3"><i class="fas fa-fingerprint me-2 fingerprinting-icon"></i>Runtime Fingerprinting</h5>
+                        
+                        <div class="fingerprinting-item mb-3">
+                            <label for="allowed_domains" class="form-label">
+                                <i class="fas fa-globe me-2 text-primary"></i>Allowed Domains
+                            </label>
+                            <input type="text" class="form-control" id="allowed_domains" name="allowed_domains" placeholder="example.com, *.subdomain.com">
+                            <small class="form-text text-muted">
+                                Comma-separated domains where the code is allowed to run. Use * as wildcard for subdomains.
+                            </small>
+                        </div>
+                        
+                        <div class="fingerprinting-item mb-3">
+                            <label for="allowed_ips" class="form-label">
+                                <i class="fas fa-network-wired me-2 text-primary"></i>Allowed IP Addresses
+                            </label>
+                            <input type="text" class="form-control" id="allowed_ips" name="allowed_ips" placeholder="192.168.1.1, 10.0.0.1, 127.0.0.1">
+                            <small class="form-text text-muted">
+                                Comma-separated IP addresses where the code is allowed to run. Add 127.0.0.1 for local testing.
+                            </small>
+                        </div>
+                        
+                        <div class="fingerprinting-item mb-3">
+                            <label for="allowed_paths" class="form-label">
+                                <i class="fas fa-folder me-2 text-primary"></i>Allowed Installation Paths
+                            </label>
+                            <input type="text" class="form-control" id="allowed_paths" name="allowed_paths" placeholder="/var/www, /home/user/public_html">
+                            <small class="form-text text-muted">
+                                Comma-separated paths where the code is allowed to run. Use phpinfo() to find your server path.
+                            </small>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Runtime fingerprinting adds environment validation to prevent unauthorized use. Clear fields to disable specific validations.
+                        </div>
                     </div>
                     
                     <div class="mb-3">

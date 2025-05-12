@@ -2,11 +2,19 @@
 
 :root {
     --primary-color: #4361ee;
+    --primary-rgb: 67, 97, 238;
     --secondary-color: #3f37c9;
+    --secondary-rgb: 63, 55, 201;
     --accent-color: #4895ef;
+    --accent-rgb: 72, 149, 239;
     --success-color: #4cc9f0;
+    --success-color-rgb: 76, 201, 240;
     --warning-color: #f72585;
+    --warning-color-rgb: 247, 37, 133;
     --info-color: #4895ef;
+    --info-color-rgb: 72, 149, 239;
+    --danger-color: #ef476f;
+    --danger-color-rgb: 239, 71, 111;
     --dark-color: #1d3557;
     --light-color: #f8f9fa;
     --gray-100: #f8f9fa;
@@ -761,4 +769,68 @@ body.dark-mode .theme-toggle .dark-icon {
 .tooltip-inner {
     border-radius: var(--border-radius);
     padding: 0.5rem 1rem;
+}
+
+/* Runtime Fingerprinting Styling */
+.fingerprinting-section {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+    padding-top: 1.5rem;
+}
+
+.fingerprinting-icon {
+    color: var(--warning-color);
+}
+
+.fingerprinting-item {
+    margin-bottom: 1.25rem;
+    background-color: rgba(var(--primary-rgb), 0.02);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    border-left: 3px solid var(--info-color);
+    transition: var(--transition-base);
+}
+
+.fingerprinting-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+    transform: translateX(3px);
+}
+
+.fingerprinting-item label {
+    font-weight: 500;
+    color: var(--gray-800);
+}
+
+.fingerprinting-item small {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--gray-600);
+}
+
+/* Junk Code Injection Styling */
+.junk-code-option {
+    display: block;
+    background-color: rgba(var(--success-color-rgb), 0.05);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--success-color);
+    transition: var(--transition-base);
+}
+
+.junk-code-option:hover {
+    background-color: rgba(var(--success-color-rgb), 0.1);
+    transform: translateX(3px);
+}
+
+.junk-code-option .form-check-input:checked {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+/* Advanced Security Options */
+.security-options-section {
+    border-top: 1px solid var(--gray-200);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
 }

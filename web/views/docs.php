@@ -156,10 +156,20 @@
                             <li><strong>Anti-Logger Protection</strong> - Prevents sensitive code and data from being logged</li>
                             <li><strong>Anti-Debugger Protection</strong> - Detects and thwarts debugging attempts</li>
                             <li><strong>License Verification</strong> - Adds domain-specific licensing checks</li>
+                            <li><strong>Junk Code Injection</strong> - Adds decoy code to confuse reverse engineering</li>
+                            <li><strong>Runtime Fingerprinting</strong> - Validates execution environment (domain, IP, path)</li>
+                        </ul>
+                        
+                        <h5 class="mt-4">Runtime Fingerprinting</h5>
+                        <p>Runtime fingerprinting adds an additional layer of security by validating the execution environment:</p>
+                        <ul>
+                            <li><strong>Domain Validation</strong> - Restricts execution to specified domains (supports wildcards)</li>
+                            <li><strong>IP Address Validation</strong> - Limits execution to specific IP addresses</li>
+                            <li><strong>Installation Path Validation</strong> - Ensures code runs only in authorized locations</li>
                         </ul>
                         
                         <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>Note: Anti-debugging features might interfere with legitimate development environments. Use these options only for production deployments.
+                            <i class="fas fa-exclamation-triangle me-2"></i>Note: Advanced protection features might interfere with legitimate development environments. Use these options only for production deployments.
                         </div>
                     </div>
                     
@@ -243,10 +253,44 @@ your-project/
                         <ul>
                             <li>Detects common debugging extensions (Xdebug, etc.)</li>
                             <li>Monitors execution timing to identify step-by-step debugging</li>
-                            <li>Implements countermeasures when debugging is detected</li>
-                            <li>Uses decoy code to confuse analysis tools</li>
+                            <li>Prevents breakpoint setting in critical code sections</li>
                         </ul>
                         
+                        <h5 class="mt-4">Junk Code Injection</h5>
+                        <p>This feature adds decoy code to confuse reverse engineering attempts:</p>
+                        <ul>
+                            <li>Inserts fake functions and data structures</li>
+                            <li>Adds non-executing decoy logic pathways</li>
+                            <li>Includes misleading variable names and comments</li>
+                            <li>Creates random cryptographic operations as distractions</li>
+                        </ul>
+                        
+                        <h5 class="mt-4">Runtime Fingerprinting</h5>
+                        <p>This feature adds environment validation to control where and how your code executes:</p>
+                        <ul>
+                            <li><strong>Domain Validation</strong> - Controls what domains can run your code</li>
+                            <ul>
+                                <li>Supports exact matches (example.com)</li>
+                                <li>Supports wildcards (*.example.com)</li>
+                                <li>Validates both primary domains and subdomains</li>
+                            </ul>
+                            <li><strong>IP Address Validation</strong> - Restricts execution to specific IPs</li>
+                            <ul>
+                                <li>Supports individual IP addresses</li>
+                                <li>Basic CIDR subnet matching</li>
+                                <li>Multiple IPs (comma-separated)</li>
+                            </ul>
+                            <li><strong>Path Validation</strong> - Controls installation directories</li>
+                            <ul>
+                                <li>Validates script location on server</li>
+                                <li>Prevents unauthorized copying/moving of files</li>
+                                <li>Multiple paths (comma-separated)</li>
+                            </ul>
+                        </ul>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-lightbulb me-2"></i>Pro Tip: Combine runtime fingerprinting with license verification for maximum deployment control. For example, restrict by both domain and IP address for enhanced security.
+                        </div>
                         <h5 class="mt-4">Customizing Security Levels</h5>
                         <p>You can fine-tune the security level for both licensing and protection features:</p>
                         <ul>
@@ -254,6 +298,72 @@ your-project/
                             <li><strong>Level 2</strong> - Enhanced protection with signatures</li>
                             <li><strong>Level 3</strong> - Maximum protection with multiple security layers</li>
                         </ul>
+                    </div>
+                    
+                    <div id="advanced-protection" class="mb-5">
+                        <h3 class="border-bottom pb-2 mb-3">Advanced Protection Features</h3>
+                        
+                        <p>ChunkShield provides several advanced protection features to enhance your code security:</p>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <i class="fas fa-fingerprint me-2"></i>Runtime Fingerprinting
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Validates execution environment through:</p>
+                                        <ul>
+                                            <li><strong>Domain Validation</strong> - Restricts to specific domains</li>
+                                            <li><strong>IP Address Validation</strong> - Limits by IP address or range</li>
+                                            <li><strong>Path Validation</strong> - Ensures correct installation path</li>
+                                        </ul>
+                                        <p>This prevents unauthorized use and copying of your software.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card h-100 border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <i class="fas fa-random me-2"></i>Junk Code Injection
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Confuses reverse-engineering attempts through:</p>
+                                        <ul>
+                                            <li><strong>Decoy Functions</strong> - Fake operations to analyze</li>
+                                            <li><strong>False Logic Paths</strong> - Misleading code flow</li>
+                                            <li><strong>Random Cryptographic Operations</strong> - Resource distractions</li>
+                                        </ul>
+                                        <p>Makes understanding protected code exponentially more difficult.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4">Implementing Runtime Fingerprinting</h5>
+                        <p>When generating your loader, you can specify:</p>
+                        <ul>
+                            <li><strong>Allowed Domains</strong> - Both exact domains and wildcards (*.example.com)</li>
+                            <li><strong>Allowed IP Addresses</strong> - Specific IPs for server validation</li>
+                            <li><strong>Allowed Installation Paths</strong> - Valid server paths</li>
+                        </ul>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-lightbulb me-2"></i>Pro Tip: For development, include <code>localhost</code> in allowed domains and <code>127.0.0.1</code> in allowed IPs.
+                        </div>
+                        
+                        <h5 class="mt-4">Junk Code Configuration</h5>
+                        <p>Junk code is automatically configured to:</p>
+                        <ul>
+                            <li>Generate random, but plausible-looking functions</li>
+                            <li>Create cryptographic operations that are executed but don't affect actual code</li>
+                            <li>Add decoy variables and data structures</li>
+                        </ul>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Note: While junk code adds minimal overhead, be aware that it slightly increases the size of your loader.
+                        </div>
                     </div>
                     
                     <div id="integration" class="mb-5">

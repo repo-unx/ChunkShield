@@ -96,7 +96,29 @@
                                             <li><strong>Chunk files not found</strong>: Ensure all chunk files are properly uploaded in their expected directory structure.</li>
                                             <li><strong>License verification failed</strong>: If you're using domain-locked licenses, ensure you're testing on the correct domain.</li>
                                             <li><strong>Encryption key errors</strong>: Make sure the key used in your loader matches the key used for encryption.</li>
+                                            <li><strong>Domain validation failed</strong>: When using runtime fingerprinting, ensure the domain restrictions allow execution in your current environment.</li>
+                                            <li><strong>Checksum mismatch</strong>: This indicates possible corruption or modification of chunk files. Regenerate and re-upload the files.</li>
                                         </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFingerprinting">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFingerprinting" aria-expanded="false" aria-controls="collapseFingerprinting">
+                                        Runtime Fingerprinting Errors
+                                    </button>
+                                </h2>
+                                <div id="collapseFingerprinting" class="accordion-collapse collapse" aria-labelledby="headingFingerprinting" data-bs-parent="#errorsAccordion">
+                                    <div class="accordion-body">
+                                        <ul>
+                                            <li><strong>Domain validation failed</strong>: The code is running on a domain not included in the allowed domains list.</li>
+                                            <li><strong>IP validation failed</strong>: The server IP address doesn't match any allowed IPs.</li>
+                                            <li><strong>Path validation failed</strong>: The code is being executed from an unauthorized file path.</li>
+                                            <li><strong>Environment data missing</strong>: The server environment doesn't provide expected values (like HTTP_HOST).</li>
+                                            <li><strong>Multiple validation failures</strong>: When encountering multiple errors, address them one at a time starting with domain validation.</li>
+                                        </ul>
+                                        <p><strong>Tip:</strong> For development purposes, you can temporarily comment out the die() statements in the validation code to see all validation errors without halting execution.</p>
                                     </div>
                                 </div>
                             </div>
@@ -149,6 +171,31 @@
                             <li>Ensure all license files (.lic and .key if applicable) are in the correct location.</li>
                             <li>Check for any errors in your license generation parameters.</li>
                         </ul>
+                        
+                        <h4 class="mt-4">Runtime Fingerprinting Issues</h4>
+                        <p>If you're having problems with runtime fingerprinting validation:</p>
+                        <ul>
+                            <li><strong>Domain Validation</strong>: 
+                                <ul>
+                                    <li>Ensure the domain format is correct (e.g., example.com, *.example.com)</li>
+                                    <li>For localhost testing, include "localhost" in your allowed domains</li>
+                                    <li>Check that $_SERVER['HTTP_HOST'] is available in your environment</li>
+                                </ul>
+                            </li>
+                            <li><strong>IP Validation</strong>:
+                                <ul>
+                                    <li>For development, include your local IP and 127.0.0.1</li>
+                                    <li>When using proxy servers, the detected IP might be different from expected</li>
+                                </ul>
+                            </li>
+                            <li><strong>Path Validation</strong>:
+                                <ul>
+                                    <li>Check the actual server path using a phpinfo() script</li>
+                                    <li>Include both absolute and relative paths if unsure</li>
+                                    <li>Account for symbolic links if used in your hosting environment</li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                     
                     <div id="faq" class="mb-5">
@@ -199,6 +246,47 @@
                                             <li>Replace all files (loader, chunks, etc.) on your server</li>
                                         </ol>
                                         <p>It's important to maintain your original source code in a secure location, as deobfuscating the protected code for updates is extremely difficult.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour">
+                                        What is Runtime Fingerprinting and how does it work?
+                                    </button>
+                                </h2>
+                                <div id="faqFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Runtime Fingerprinting is an advanced security feature that validates the environment where your code is executing. It ensures your code only runs in authorized contexts.</p>
+                                        <p><strong>Key components:</strong></p>
+                                        <ul>
+                                            <li><strong>Domain Validation</strong> - Restricts execution to specific domains (e.g., example.com, *.yourdomain.com)</li>
+                                            <li><strong>IP Address Validation</strong> - Limits execution to specific IPs or ranges</li>
+                                            <li><strong>Path Validation</strong> - Ensures code only runs from approved server paths</li>
+                                        </ul>
+                                        <p>By default, validation warnings are logged but don't block execution. To enforce strict validation, you can modify the loader to halt execution when validation fails.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive">
+                                        What is Junk Code Injection?
+                                    </button>
+                                </h2>
+                                <div id="faqFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Junk Code Injection is an anti-reverse engineering technique that adds decoy code to your protected files. This makes it harder for attackers to identify the real functionality.</p>
+                                        <p><strong>Benefits include:</strong></p>
+                                        <ul>
+                                            <li>Confusing decompilers and code analysis tools</li>
+                                            <li>Creating misleading code paths that waste an attacker's time</li>
+                                            <li>Adding random cryptographic operations as distractions</li>
+                                            <li>Making automated deobfuscation tools less effective</li>
+                                        </ul>
+                                        <p>The injected code is designed to have minimal performance impact while maximizing confusion for potential attackers.</p>
                                     </div>
                                 </div>
                             </div>

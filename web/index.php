@@ -172,7 +172,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $options = [
                 'license_check' => isset($_POST['license_check']),
                 'anti_logger' => isset($_POST['anti_logger']),
-                'anti_debugger' => isset($_POST['anti_debugger'])
+                'anti_debugger' => isset($_POST['anti_debugger']),
+                'junk_code' => isset($_POST['junk_code']),
+                'allowed_domains' => $_POST['allowed_domains'] ?? '',
+                'allowed_ips' => $_POST['allowed_ips'] ?? '',
+                'allowed_paths' => $_POST['allowed_paths'] ?? ''
             ];
             
             $loader = generateLoader($chunksInfo, $encryptionKey, $options);

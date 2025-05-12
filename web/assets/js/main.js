@@ -166,6 +166,21 @@ document.addEventListener('DOMContentLoaded', function() {
             validateDomainInput(this);
         });
     }
+    
+    // Runtime fingerprinting validation
+    const fpDomainInput = document.getElementById('allowed_domains');
+    if (fpDomainInput) {
+        fpDomainInput.addEventListener('input', function() {
+            validateFingerPrintDomains(this);
+        });
+    }
+    
+    const fpIPInput = document.getElementById('allowed_ips');
+    if (fpIPInput) {
+        fpIPInput.addEventListener('input', function() {
+            validateIPAddresses(this);
+        });
+    }
 
     // Expiration date picker - default to 1 year from now
     const expiryInput = document.getElementById('license_expiry');
@@ -264,6 +279,114 @@ document.addEventListener('DOMContentLoaded', function() {
         if (value === '') {
             input.classList.remove('is-invalid', 'is-valid');
         } else if (domainRegex.test(value)) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else {
+            input.classList.remove('is-valid');
+            input.classList.add('is-invalid');
+        }
+    }
+    
+    // Function to validate fingerprinting domains (allows wildcards and comma-separated values)
+    function validateFingerPrintDomains(input) {
+        if (!input) return;
+        
+        const value = input.value.trim();
+        if (value === '') {
+            input.classList.remove('is-invalid', 'is-valid');
+            return;
+        }
+        
+        const domains = value.split(',');
+        let isValid = true;
+        
+        for (let domain of domains) {
+            domain = domain.trim();
+            if (domain === '') continue;
+            
+            // Check for wildcard domain format
+            if (domain.startsWith('*.')) {
+                domain = domain.substring(2); // Remove *. prefix
+            }
+            
+            // Basic domain validation
+            const domainRegex = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+            if (!domainRegex.test(domain)) {
+                isValid = false;
+                break;
+            }
+        }
+        
+        if (isValid) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else {
+            input.classList.remove('is-valid');
+            input.classList.add('is-invalid');
+        }
+    }
+    
+    // Function to validate IP addresses (allows comma-separated values and basic CIDR)
+    function validateIPAddresses(input) {
+        if (!input) return;
+        
+        const value = input.value.trim();
+        if (value === '') {
+            input.classList.remove('is-invalid', 'is-valid');
+            return;
+        }
+        
+        // Allow asterisk for "any IP"
+        if (value === '*') {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            return;
+        }
+        
+        const ips = value.split(',');
+        let isValid = true;
+        let errorMessage = '';
+        
+        for (let ip of ips) {
+            ip = ip.trim();
+            if (ip === '') continue;
+            if (ip === '*' || ip === 'localhost') continue; // Allow wildcards and localhost
+            
+            // Handle CIDR notation
+            if (ip.includes('/')) {
+                const parts = ip.split('/');
+                ip = parts[0];
+                const cidr = parseInt(parts[1]);
+                
+                // Validate CIDR range
+                if (isNaN(cidr) || cidr < 0 || cidr > 32) {
+                    isValid = false;
+                    errorMessage = 'CIDR mask must be between 0 and 32';
+                    break;
+                }
+            }
+            
+            // Basic IPv4 validation
+            const ipRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+            const matches = ip.match(ipRegex);
+            if (!matches) {
+                isValid = false;
+                break;
+            }
+            
+            // Check each octet is between 0-255
+            for (let i = 1; i <= 4; i++) {
+                const octet = parseInt(matches[i]);
+                if (octet < 0 || octet > 255) {
+                    isValid = false;
+                    break;
+                }
+            }
+            
+            if (!isValid) break;
+        }
+        
+        if (isValid) {
             input.classList.remove('is-invalid');
             input.classList.add('is-valid');
         } else {

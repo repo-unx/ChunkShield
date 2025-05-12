@@ -39,34 +39,43 @@ if (count($codeLines) > 20) {
                 <form action="index.php" method="post">
                     <input type="hidden" name="action" value="obfuscate">
                     
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="rename_variables" name="rename_variables" checked>
-                        <label class="form-check-label" for="rename_variables">
-                            <i class="fas fa-random me-2 text-primary"></i>Rename Variables & Functions
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Replaces all variable, function, and class names with random strings.
-                        </small>
+                    <div class="junk-code-option mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rename_variables" name="rename_variables" checked>
+                            <label class="form-check-label" for="rename_variables">
+                                <i class="fas fa-random me-2 text-primary"></i><strong>Rename Variables & Functions</strong>
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">
+                                Replaces all variable, function, and class names with random strings.
+                                This makes code much harder to understand and analyze.
+                            </small>
+                        </div>
                     </div>
                     
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="remove_whitespace" name="remove_whitespace" checked>
-                        <label class="form-check-label" for="remove_whitespace">
-                            <i class="fas fa-compress-alt me-2 text-primary"></i>Remove Comments & Whitespace
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Removes all comments and unnecessary whitespace from the code.
-                        </small>
+                    <div class="junk-code-option mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remove_whitespace" name="remove_whitespace" checked>
+                            <label class="form-check-label" for="remove_whitespace">
+                                <i class="fas fa-compress-alt me-2 text-warning"></i><strong>Remove Comments & Whitespace</strong>
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">
+                                Removes all comments and unnecessary whitespace from the code.
+                                This eliminates any documentation that might explain code functionality.
+                            </small>
+                        </div>
                     </div>
                     
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="encode_strings" name="encode_strings" checked>
-                        <label class="form-check-label" for="encode_strings">
-                            <i class="fas fa-lock me-2 text-primary"></i>Encode String Literals
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Encodes string literals with base64 and adds decode statements at runtime.
-                        </small>
+                    <div class="junk-code-option mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="encode_strings" name="encode_strings" checked>
+                            <label class="form-check-label" for="encode_strings">
+                                <i class="fas fa-lock me-2 text-success"></i><strong>Encode String Literals</strong>
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">
+                                Encodes string literals with base64 and adds decode statements at runtime.
+                                Makes all text in your code unreadable to casual inspection.
+                            </small>
+                        </div>
                     </div>
                     
                     <div class="alert alert-warning">

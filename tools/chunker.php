@@ -62,11 +62,12 @@ function createChunks($code, $maxSizeKB = 5, $encrypt = true, $encryptionKey = '
             $encryptedContent = encryptContent($chunkContent, $encryptionKey, $iv);
             file_put_contents($chunkFilename, $encryptedContent);
             
-            // Add chunk info to the map
+            // Add chunk info to the map with plaintext checksum for more robust integrity checking
             $chunksMap['chunks'][] = [
                 'file' => basename($chunkFilename),
                 'order' => 1,
                 'checksum' => $chunkChecksum,
+                'checksum_plaintext' => substr($chunkContent, 0, 255), // Store first 255 chars for additional validation
                 'iv' => base64_encode($iv)
             ];
         } else {
@@ -116,11 +117,12 @@ function createChunks($code, $maxSizeKB = 5, $encrypt = true, $encryptionKey = '
                 $encryptedContent = encryptContent($chunkContent, $encryptionKey, $iv);
                 file_put_contents($chunkFilename, $encryptedContent);
                 
-                // Add chunk info to the map
+                // Add chunk info to the map with plaintext checksum for more robust integrity checking
                 $chunksMap['chunks'][] = [
                     'file' => basename($chunkFilename),
                     'order' => $index + 1,
                     'checksum' => $chunkChecksum,
+                    'checksum_plaintext' => substr($chunkContent, 0, 255), // Store first 255 chars for additional validation
                     'iv' => base64_encode($iv)
                 ];
             } else {
@@ -174,8 +176,14 @@ function encryptContent($content, $key, $iv) {
     // Hash the key to ensure it's the right length
     $key = hash('sha256', $key, true);
     
-    // Encrypt the content
-    $encrypted = openssl_encrypt($content, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+    // There's no need for compression check since we'll be using raw content
+    $contentToEncrypt = $content;
+    
+    // Encrypt the content - ensure we're using consistent parameters for encryption
+    $encrypted = openssl_encrypt($contentToEncrypt, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+    if ($encrypted === false) {
+        throw new Exception("Encryption failed: " . openssl_error_string());
+    }
     
     // Return base64 encoded encrypted content and IV
     return base64_encode($encrypted);

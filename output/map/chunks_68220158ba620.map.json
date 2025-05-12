@@ -1,0 +1,14 @@
+{
+    "chunks": [
+        {
+            "file": "chunk_68220158ba620_01.php.enc",
+            "order": 1,
+            "checksum": "f6d494618eca8d679d17ee50f35bfd67",
+            "checksum_plaintext": "<?php\r\n define('APP_NAME', base64_decode(\"U2VjdXJlU3RhdHMgUHJv\")); define('VERSION', base64_decode(\"Mi4zLjE=\")); class _4V598Wl6J95R { public $_aSp1rime; public $_NX3RgWW6; public $_Ep016rhw; public function __construct($_aSp1rime, $_NX3RgWW6, $_Ep016rhw)",
+            "iv": "StbiLtdKAkzKHnGvjJnKiQ=="
+        }
+    ],
+    "key_hint": "manual",
+    "timestamp": 1747059032,
+    "checksum": "f6d494618eca8d679d17ee50f35bfd67"
+}

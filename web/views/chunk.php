@@ -42,40 +42,45 @@ $obfuscatedPath = $_SESSION['obfuscated_file'];
                 <form action="index.php" method="post">
                     <input type="hidden" name="action" value="chunk">
                     
-                    <div class="mb-3">
+                    <div class="fingerprinting-item mb-3">
                         <label for="chunk_size" class="form-label">
-                            <i class="fas fa-cut me-2 text-primary"></i>Maximum Chunk Size (KB)
+                            <i class="fas fa-cut me-2 text-primary"></i><strong>Maximum Chunk Size (KB)</strong>
                         </label>
                         <input type="number" class="form-control" id="chunk_size" name="chunk_size" value="5" min="1" max="50">
                         <small class="form-text text-muted">
-                            The maximum size of each code chunk in KB. Smaller chunks mean more files.
+                            The maximum size of each code chunk in KB. Smaller chunks mean more files and better security.
+                            Recommended: 2-5KB for optimal protection.
                         </small>
                     </div>
                     
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="encrypt_chunks" name="encrypt_chunks" checked>
-                        <label class="form-check-label" for="encrypt_chunks">
-                            <i class="fas fa-lock me-2 text-primary"></i>Encrypt Chunks
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Encrypts each chunk using AES-256-CBC encryption.
-                        </small>
+                    <div class="junk-code-option mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="encrypt_chunks" name="encrypt_chunks" checked>
+                            <label class="form-check-label" for="encrypt_chunks">
+                                <i class="fas fa-lock me-2 text-danger"></i><strong>Encrypt Chunks</strong>
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">
+                                Encrypts each chunk using AES-256-CBC encryption.
+                                This adds military-grade encryption to each code fragment.
+                            </small>
+                        </div>
                     </div>
                     
-                    <div class="mb-3">
+                    <div class="fingerprinting-item mb-3">
                         <label for="encryption_key" class="form-label">
-                            <i class="fas fa-key me-2 text-primary"></i>Encryption Key
+                            <i class="fas fa-key me-2 text-warning"></i><strong>Encryption Key</strong>
                         </label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="encryption_key" name="encryption_key" 
                                    value="<?= isset($_SESSION['encryption_key']) ? htmlspecialchars($_SESSION['encryption_key']) : '' ?>" 
                                    required>
-                            <button class="btn btn-outline-secondary" type="button" id="generateKey">
-                                <i class="fas fa-random"></i> Generate
+                            <button class="btn btn-outline-primary" type="button" id="generateKey">
+                                <i class="fas fa-random"></i> Generate Strong Key
                             </button>
                         </div>
-                        <small class="form-text text-muted">
-                            This key will be used to encrypt chunks and must be provided to the loader.
+                        <small class="form-text text-muted mt-1">
+                            This cryptographic key encrypts your code chunks and will be embedded in the loader.
+                            For maximum security, use a strong random key (32+ characters).
                         </small>
                     </div>
                     
