@@ -1,100 +1,158 @@
+<div class="section-header mb-4">
+    <h2>Obfuscate Code</h2>
+    <p class="">Configure obfuscation settings for your PHP code.</p>
+</div>
+
 <?php
-// Ensure we have an uploaded file
+// Check if file is uploaded
 if (!isset($_SESSION['uploaded_file'])) {
-    $_SESSION['error'] = 'No file uploaded. Please upload a PHP file first.';
-    header('Location: index.php?tab=upload');
+    echo '<div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            No file has been uploaded. Please <a href="index.php?tab=upload">upload a file</a> first.
+          </div>';
     exit;
 }
 
-// Get code preview (first 20 lines)
-$code = $_SESSION['uploaded_file'];
-$codeLines = explode("\n", $code);
-$preview = implode("\n", array_slice($codeLines, 0, min(20, count($codeLines))));
-if (count($codeLines) > 20) {
-    $preview .= "\n// ... (more lines) ...";
-}
+// Display file info
+$filename = $_SESSION['original_filename'] ?? 'unknown.php';
+$filesize = strlen($_SESSION['uploaded_file']);
+$filesize_formatted = formatFileSize($filesize);
 ?>
 
-<h2 class="mb-4"><i class="fas fa-random me-2"></i>Obfuscate Code</h2>
-
 <div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-file-code me-2"></i>Original PHP Code Preview
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Obfuscation Settings</h5>
+                <span class="badge bg-primary">
+                    <i class="fas fa-file-code me-1"></i> <?php echo htmlspecialchars($filename); ?> (<?php echo $filesize_formatted; ?>)
+                </span>
             </div>
             <div class="card-body">
-                <pre class="bg-light p-3 rounded"><code><?= htmlspecialchars($preview) ?></code></pre>
-                <p class="text-muted">Filename: <?= htmlspecialchars($_SESSION['original_filename']) ?></p>
+                <form method="post" action="index.php">
+                    <input type="hidden" name="action" value="obfuscate">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Basic Options</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="remove_comments" id="remove_comments" checked>
+                                        <label class="form-check-label" for="remove_comments">
+                                            Remove Comments
+                                            <small class="d-block ">Strip all comments from the code</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="remove_whitespace" id="remove_whitespace" checked>
+                                        <label class="form-check-label" for="remove_whitespace">
+                                            Minimize Whitespace
+                                            <small class="d-block ">Remove unnecessary whitespace and line breaks</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Advanced Options</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="rename_variables" id="rename_variables" checked>
+                                        <label class="form-check-label" for="rename_variables">
+                                            Rename Variables & Functions
+                                            <small class="d-block ">Replace variable and function names with random ones</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="insert_junk" id="insert_junk" checked>
+                                        <label class="form-check-label" for="insert_junk">
+                                            Insert Junk Code
+                                            <small class="d-block ">Add random code that does nothing</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="junk_density" class="form-label">Junk Code Density (1-10)</label>
+                                        <input type="range" class="form-range" name="junk_density" id="junk_density" min="1" max="10" value="3" oninput="this.nextElementSibling.value = this.value">
+                                        <output>3</output>
+                                        <small class=" d-block">Higher values add more junk code (may increase file size)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        These settings will affect how well your code is protected. More aggressive obfuscation makes the code harder to understand but might impact performance.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="index.php?tab=upload" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Upload
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-code me-2"></i> Obfuscate & Continue
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-cogs me-2"></i>Obfuscation Options
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Code Preview</h5>
+                <span class="badge bg-primary">
+                    <i class="fas fa-terminal me-1"></i> Original Code
+                </span>
             </div>
             <div class="card-body">
-                <form action="index.php" method="post">
-                    <input type="hidden" name="action" value="obfuscate">
-                    
-                    <div class="junk-code-option mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rename_variables" name="rename_variables" checked>
-                            <label class="form-check-label" for="rename_variables">
-                                <i class="fas fa-random me-2 text-primary"></i><strong>Rename Variables & Functions</strong>
-                            </label>
-                            <small class="form-text text-muted d-block mt-1">
-                                Replaces all variable, function, and class names with random strings.
-                                This makes code much harder to understand and analyze.
-                            </small>
-                        </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div id="originalCode" class="code-preview original-code p-2 rounded" style="background-color: #2c3e50; color: #ecf0f1; font-family: monospace; white-space: pre-wrap; height: 150px; overflow: auto; font-size: 0.8rem;"><?php echo htmlspecialchars($_SESSION['uploaded_file'] ?? '// No code uploaded'); ?></div>
                     </div>
-                    
-                    <div class="junk-code-option mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="remove_whitespace" name="remove_whitespace" checked>
-                            <label class="form-check-label" for="remove_whitespace">
-                                <i class="fas fa-compress-alt me-2 text-warning"></i><strong>Remove Comments & Whitespace</strong>
-                            </label>
-                            <small class="form-text text-muted d-block mt-1">
-                                Removes all comments and unnecessary whitespace from the code.
-                                This eliminates any documentation that might explain code functionality.
-                            </small>
-                        </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-12 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-file-alt me-1"></i> Lines: <?php echo substr_count($_SESSION['uploaded_file'], "\n") + 1; ?>
+                        </span>
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-file-code me-1"></i> Size: <?php echo $filesize_formatted; ?>
+                        </span>
                     </div>
-                    
-                    <div class="junk-code-option mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="encode_strings" name="encode_strings" checked>
-                            <label class="form-check-label" for="encode_strings">
-                                <i class="fas fa-lock me-2 text-success"></i><strong>Encode String Literals</strong>
-                            </label>
-                            <small class="form-text text-muted d-block mt-1">
-                                Encodes string literals with base64 and adds decode statements at runtime.
-                                Makes all text in your code unreadable to casual inspection.
-                            </small>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Warning: Obfuscation may affect code that uses reflection or evaluates dynamic variable names.
-                    </div>
-                    
-                    <div id="progressBar" class="progress mt-4 d-none">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                    </div>
-                    
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="index.php?tab=upload" class="btn btn-secondary me-md-2">
-                            <i class="fas fa-arrow-left me-2"></i>Back
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-code me-2"></i>Obfuscate & Continue
-                        </button>
-                    </div>
-                </form>
+                </div>
+
+
+                <div class="benefits mt-3">
+                    <h6>Benefits of Obfuscation</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-shield-alt text-success me-2"></i>
+                            <small>Makes reverse-engineering difficult</small>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-eye-slash text-success me-2"></i>
+                            <small>Hides business logic from prying eyes</small>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-lock text-success me-2"></i>
+                            <small>First layer of protection for your IP</small>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP Code Obfuscation & Licensing Tool</title>
+    <title>ChunkShield - PHP Code Protection System</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
@@ -29,11 +29,11 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="app-brand">
                     <h1 class="app-title h3 mb-0">
-                        <i class="fas fa-shield-alt me-2"></i>PHP Obfuscator Pro
+                        <i class="fas fa-shield-alt me-2"></i>ChunkShield
                     </h1>
                 </div>
                 <div class="d-flex align-items-center">
-                    <span class="app-tagline me-3 d-none d-md-block">Secure Your Code with Advanced Encryption</span>
+                    <span class="app-tagline me-3 d-none d-md-block">Secure Your PHP Code with Advanced Protection</span>
                     <div class="theme-toggle-wrapper me-2">
                         <button class="btn btn-sm theme-toggle" id="darkModeToggle" title="Toggle Light/Dark Mode">
                             <i class="fas fa-sun light-icon"></i>
@@ -88,7 +88,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo $current_tab === 'obfuscate' ? 'active' : ''; ?> <?php echo !isset($_SESSION['uploaded_file']) ? 'disabled' : ''; ?>" href="index.php?tab=obfuscate">
-                        <i class="fas fa-random"></i> <span>Obfuscate</span>
+                        <i class="fas fa-code"></i> <span>Obfuscate</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -148,4 +148,4 @@
             </div>
             
             <!-- Main Content Area -->
-            <div class="main-content">
+            <div class="main-content"><?php /* Main content will be here */ ?>

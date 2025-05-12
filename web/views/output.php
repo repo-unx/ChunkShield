@@ -1,288 +1,301 @@
+<div class="section-header mb-4">
+    <h2>Output Files</h2>
+    <p class="">Your protected PHP code files are ready for download.</p>
+</div>
+
 <?php
-// Ensure we have a loader file
+// Check if loader is generated
 if (!isset($_SESSION['loader_file'])) {
-    $_SESSION['error'] = 'No loader file found. Please generate a loader first.';
-    header('Location: index.php?tab=loader');
+    echo '<div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            No protected files available. Please <a href="index.php?tab=loader">generate a loader</a> first.
+          </div>';
     exit;
 }
 
-// Get paths to output files
-$loaderPath = $_SESSION['loader_file'];
-$obfuscatedPath = $_SESSION['obfuscated_file'];
-$chunksInfo = $_SESSION['chunks_info'];
-$mapFilePath = $chunksInfo['mapFile'];
+// Get file information
+$loader_file = $_SESSION['loader_file'] ?? '';
+$chunks_dir = $_SESSION['chunks_dir'] ?? '';
+$license_file = $_SESSION['license_file'] ?? '';
+$chunk_count = count($_SESSION['chunks_info']['chunks'] ?? []);
+$original_filename = $_SESSION['original_filename'] ?? 'unknown.php';
 
-// Function to get relative path for display
-function getRelativePath($path) {
-    $basePath = realpath(__DIR__ . '/../../');
-    return str_replace($basePath, '', $path);
-}
+// Create zip archive for download
+$output_basename = pathinfo($original_filename, PATHINFO_FILENAME);
+$output_zip = dirname(dirname(__DIR__)) . '/output/' . $output_basename . '_protected.zip';
 
-// Format relative paths for display
-$relLoaderPath = getRelativePath($loaderPath);
-$relObfuscatedPath = getRelativePath($obfuscatedPath);
-$relMapFilePath = getRelativePath($mapFilePath);
-
-// Create a zip file containing all the output
-$zipFilename = 'obfuscated_' . time() . '.zip';
-$zipPath = __DIR__ . '/../../output/' . $zipFilename;
-
+// Create new ZIP archive
 $zip = new ZipArchive();
-if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
-    // Add obfuscated file
-    $zip->addFile($obfuscatedPath, basename($obfuscatedPath));
-    
+if ($zip->open($output_zip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
     // Add loader file
-    $zip->addFile($loaderPath, basename($loaderPath));
-    
-    // Add map file
-    $zip->addFile($mapFilePath, 'map/' . basename($mapFilePath));
-    
-    // Add all chunk files
-    foreach ($chunksInfo['chunks'] as $chunk) {
-        $zip->addFile($chunk['file'], 'chunks/' . basename($chunk['file']));
+    if (file_exists($loader_file)) {
+        $zip->addFile($loader_file, basename($loader_file));
     }
-    
-    // Add license files if they exist
-    if (isset($_SESSION['license_result']) && isset($_SESSION['license_result']['license_file'])) {
-        $licenseFile = $_SESSION['license_result']['license_file'];
-        $verificationFile = $_SESSION['license_result']['verification_file'];
-        
-        if (file_exists($licenseFile)) {
-            $zip->addFile($licenseFile, 'license/' . basename($licenseFile));
-        }
-        
-        if (file_exists($verificationFile)) {
-            $zip->addFile($verificationFile, 'license/' . basename($verificationFile));
+
+    // Add chunks directory
+    if (is_dir($chunks_dir)) {
+        $zip->addEmptyDir('chunks');
+        $chunk_files = glob($chunks_dir . '/*.*');
+        foreach ($chunk_files as $chunk_file) {
+            $zip->addFile($chunk_file, 'chunks/' . basename($chunk_file));
         }
     }
-    
+
+    // Add license file if it exists
+    if (!empty($license_file) && file_exists($license_file)) {
+        $zip->addFile($license_file, basename($license_file));
+    }
+
     $zip->close();
+    $_SESSION['output_zip'] = $output_zip;
 }
 
-$zipRelPath = getRelativePath($zipPath);
+// Check if the zip exists and get its size
+$zip_exists = file_exists($output_zip);
+$zip_size = $zip_exists ? filesize($output_zip) : 0;
+$zip_size_formatted = $zip_exists ? formatFileSize($zip_size) : 'N/A';
+
+// Prepare file listing
+$files = [
+    [
+        'name' => 'loader.php',
+        'type' => 'loader',
+        'size' => file_exists($loader_file) ? filesize($loader_file) : 0,
+        'path' => $loader_file
+    ]
+];
+
+// Add chunks to file listing
+if (is_dir($chunks_dir)) {
+    $chunk_files = glob($chunks_dir . '/*.chunk');
+    foreach ($chunk_files as $chunk_file) {
+        $files[] = [
+            'name' => basename($chunk_file),
+            'type' => 'chunk',
+            'size' => filesize($chunk_file),
+            'path' => $chunk_file
+        ];
+    }
+
+    // Add metadata file
+    $metadata_file = $chunks_dir . '/metadata.json';
+    if (file_exists($metadata_file)) {
+        $files[] = [
+            'name' => 'metadata.json',
+            'type' => 'metadata',
+            'size' => filesize($metadata_file),
+            'path' => $metadata_file
+        ];
+    }
+}
+
+// Add license file if it exists
+if (!empty($license_file) && file_exists($license_file)) {
+    $files[] = [
+        'name' => basename($license_file),
+        'type' => 'license',
+        'size' => filesize($license_file),
+        'path' => $license_file
+    ];
+}
 ?>
 
-<h2 class="page-title"><i class="fas fa-download me-2"></i>Output Files</h2>
-
-<div class="alert alert-success">
-    <i class="fas fa-check-circle me-2"></i>All processing completed successfully! Your obfuscated code and license files are ready for download.
-</div>
-
 <div class="row">
-    <div class="col-lg-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-file-archive me-2"></i>Download All Files
-            </div>
-            <div class="card-body text-center">
-                <p>All generated files have been packed into a single ZIP archive for your convenience.</p>
-                <a href="<?= htmlspecialchars($zipRelPath) ?>" class="btn btn-primary btn-lg">
-                    <i class="fas fa-download me-2"></i>Download ZIP Archive
-                </a>
-                <p class="mt-3 text-muted">
-                    <small>Size: <?= round(filesize($zipPath) / 1024, 2) ?> KB</small>
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-list me-2"></i>Generated Files
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Protected Files</h5>
+                <span class="badge bg-success">
+                    <i class="fas fa-check-circle me-1"></i> Protection Complete
+                </span>
             </div>
             <div class="card-body">
-                <p>The following files have been generated:</p>
-                
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="alert alert-success mb-4">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="fas fa-shield-alt fa-2x"></i>
+                        </div>
                         <div>
-                            <i class="fas fa-file-code me-2 text-primary"></i>Obfuscated File
-                            <small class="d-block text-muted"><?= htmlspecialchars($relObfuscatedPath) ?></small>
+                            <h5 class="alert-heading">Protection Complete!</h5>
+                            <p class="mb-0">Your PHP code has been successfully protected with obfuscation, chunking, encryption, and license restrictions.</p>
                         </div>
-                        <a href="<?= htmlspecialchars($relObfuscatedPath) ?>" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </li>
-                    
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-file-code me-2 text-success"></i>Loader File
-                            <small class="d-block text-muted"><?= htmlspecialchars($relLoaderPath) ?></small>
-                        </div>
-                        <a href="<?= htmlspecialchars($relLoaderPath) ?>" class="btn btn-sm btn-outline-success">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </li>
-                    
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-file-alt me-2 text-info"></i>Chunks Map
-                            <small class="d-block text-muted"><?= htmlspecialchars($relMapFilePath) ?></small>
-                        </div>
-                        <a href="<?= htmlspecialchars($relMapFilePath) ?>" class="btn btn-sm btn-outline-info">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </li>
-                    
-                    <?php if (isset($_SESSION['license_result']) && isset($_SESSION['license_result']['license_file'])): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-key me-2 text-danger"></i>License File
-                            <small class="d-block text-muted"><?= htmlspecialchars(getRelativePath($_SESSION['license_result']['license_file'])) ?></small>
-                        </div>
-                        <a href="<?= htmlspecialchars(getRelativePath($_SESSION['license_result']['license_file'])) ?>" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </li>
-                    
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-file-contract me-2 text-danger"></i>Verification File
-                            <small class="d-block text-muted"><?= htmlspecialchars(getRelativePath($_SESSION['license_result']['verification_file'])) ?></small>
-                        </div>
-                        <a href="<?= htmlspecialchars(getRelativePath($_SESSION['license_result']['verification_file'])) ?>" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </li>
-                    
-                    <?php if (isset($_SESSION['license_package'])): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-file-archive me-2 text-danger"></i>License Package (ZIP)
-                            <small class="d-block text-muted"><?= htmlspecialchars(getRelativePath($_SESSION['license_package'])) ?></small>
-                        </div>
-                        <a href="<?= htmlspecialchars(getRelativePath($_SESSION['license_package'])) ?>" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </li>
-                    <?php endif; ?>
-                    <?php endif; ?>
-                    
-                    <li class="list-group-item">
-                        <div class="mb-2">
-                            <i class="fas fa-puzzle-piece me-2 text-warning"></i>Encrypted Chunks (<?= count($chunksInfo['chunks']) ?>)
-                        </div>
-                        <div class="accordion" id="chunksAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="chunksHeading">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#chunksCollapse" aria-expanded="false" aria-controls="chunksCollapse">
-                                        View All Chunks
+                    </div>
+                </div>
+
+                <div class="file-listing mb-4">
+                    <h6>Generated Files</h6>
+                    <ul class="file-list">
+                        <?php foreach ($files as $file): ?>
+                        <li class="file-list-item">
+                            <div class="file-name">
+                                <?php
+                                $icon_class = 'fa-file-code';
+                                if ($file['type'] === 'chunk') $icon_class = 'fa-puzzle-piece';
+                                elseif ($file['type'] === 'license') $icon_class = 'fa-key';
+                                elseif ($file['type'] === 'metadata') $icon_class = 'fa-file-alt';
+
+                                $file_size = formatFileSize($file['size']);
+                                ?>
+                                <i class="fas <?php echo $icon_class; ?> file-icon"></i>
+                                <?php echo htmlspecialchars($file['name']); ?>
+                                <span class="ms-2 badge bg-secondary"><?php echo $file['type']; ?></span>
+                            </div>
+                            <div class="file-size">
+                                <?php echo $file_size; ?>
+                            </div>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+
+                <div class="download-options">
+                    <h6>Download Options</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body text-center py-4">
+                                    <i class="fas fa-file-archive mb-3" style="font-size: 3rem; color: var(--primary-color);"></i>
+                                    <h5>Complete Package</h5>
+                                    <p class=" mb-3">Includes loader, chunks, and license</p>
+                                    <?php
+                                    $output_zip = $_SESSION['output_zip'] ?? '';
+                                    if (file_exists($output_zip)):
+                                    ?>
+                                    <a href="download.php?file=<?php echo urlencode(basename($output_zip)); ?>" 
+                                       class="btn btn-primary" 
+                                       download="<?php echo basename($output_zip); ?>">
+                                        <i class="fas fa-download me-2"></i> Download ZIP (<?php echo $zip_size_formatted; ?>)
+                                    </a>
+                                    <?php else: ?>
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="fas fa-exclamation-circle me-2"></i> No Output Available
                                     </button>
-                                </h2>
-                                <div id="chunksCollapse" class="accordion-collapse collapse" aria-labelledby="chunksHeading" data-bs-parent="#chunksAccordion">
-                                    <div class="accordion-body p-0">
-                                        <ul class="list-group list-group-flush">
-                                            <?php foreach ($chunksInfo['chunks'] as $index => $chunk): ?>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <small>Chunk <?= $index + 1 ?>: <?= basename($chunk['file']) ?></small>
-                                                </div>
-                                                <a href="<?= getRelativePath($chunk['file']) ?>" class="btn btn-sm btn-outline-warning">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                            </li>
-                                            <?php endforeach; ?>
-                                        </ul>
-                                    </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-info-circle me-2"></i>Usage Instructions
-    </div>
-    <div class="card-body">
-        <h5>How to Use the Generated Files</h5>
-        
-        <div class="row mt-4">
-            <div class="col-md-4 mb-4">
-                <h6><i class="fas fa-file-code me-2 text-primary"></i>Option 1: Basic Obfuscation</h6>
-                <p>If you only need basic protection, use the obfuscated file:</p>
-                <pre class="bg-light p-3 rounded"><code>&lt;?php
-require_once 'path/to/your-file.obf.php';
-?&gt;</code></pre>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <h6><i class="fas fa-puzzle-piece me-2 text-primary"></i>Option 2: Chunk-Based Encryption</h6>
-                <p>For enhanced security with chunk-based encryption:</p>
-                <ol>
-                    <li>Upload the loader.php file to your server</li>
-                    <li>Upload the 'chunks' directory with all chunk files</li>
-                    <li>Upload the 'map' directory with chunks.map.json</li>
-                    <li>Include the loader in your project:</li>
-                </ol>
-                <pre class="bg-light p-3 rounded"><code>&lt;?php
-require_once 'path/to/loader.php';
-?&gt;</code></pre>
-            </div>
-            
-            <?php if (isset($_SESSION['license_result'])): ?>
-            <div class="col-md-4 mb-4">
-                <h6><i class="fas fa-key me-2 text-danger"></i>Option 3: License Protection</h6>
-                <p>For maximum security with license verification:</p>
-                <ol>
-                    <li>Upload the loader.php file (with license check)</li>
-                    <li>Upload the chunks and map directories</li>
-                    <li>Upload the license file to your server</li>
-                    <li>Configure your application to verify the license:</li>
-                </ol>
-                <pre class="bg-light p-3 rounded"><code>&lt;?php
-// License file should be in the same directory
-$licenseFile = __DIR__ . '/license.lic';
-require_once 'path/to/loader.php';
-?&gt;</code></pre>
-            </div>
-            <?php endif; ?>
-        </div>
-        
-        <div class="alert alert-info">
-            <i class="fas fa-lightbulb me-2"></i>Tip: Keep your encryption key and license files secure. For production use, consider implementing a secure key storage mechanism and distributing licenses separately from your application code.
-        </div>
-        
-        <?php if (isset($_SESSION['license_result'])): ?>
-        <div class="mt-4">
-            <h5><i class="fas fa-shield-alt me-2"></i>License Distribution</h5>
-            <p>When distributing your software to clients:</p>
-            <div class="row">
-                <div class="col-md-6">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success me-2"></i>Distribute the license file (.lic) to your client
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success me-2"></i>Include instructions to place the license file in the application root
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-check text-success me-2"></i>The loader will verify the license automatically before executing the code
-                        </li>
-                    </ul>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body text-center py-4">
+                                    <i class="fas fa-file-code mb-3" style="font-size: 3rem; color: var(--primary-color);"></i>
+                                    <h5>Loader Only</h5>
+                                    <p class=" mb-3">Just the loader.php file</p>
+                                    <?php
+                                    // Ensure we have a valid loader file path for download
+                                    $download_loader_path = "";
+                                    if (!empty($loader_file) && file_exists($loader_file)) {
+                                        // Use download.php with correct parameter instead of direct path
+                                        $download_loader_path = "download.php?file=" . urlencode(basename($loader_file)) . "&type=loader";
+                                    }
+                                    ?>
+                                    <a href="<?php echo $download_loader_path; ?>" class="btn btn-outline-primary" download>
+                                        <i class="fas fa-file-code me-2"></i> Download Loader
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Remember that the license is domain-locked and will only work on the specified domain.
+
+                <div class="deployment-instructions mt-4">
+                    <h6>Deployment Instructions</h6>
+                    <ol class="deployment-steps">
+                        <li class="mb-2">Extract the ZIP file on your web server</li>
+                        <li class="mb-2">Make sure the <code>loader.php</code> and <code>chunks/</code> directory are in the same location</li>
+                        <li class="mb-2">Access your protected code by running <code>loader.php</code></li>
+                        <li class="mb-2">The loader will automatically decrypt and execute your code</li>
+                    </ol>
+
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Keep your files secure! Never share the encryption key or chunks with unauthorized users.
                     </div>
                 </div>
             </div>
         </div>
-        <?php endif; ?>
     </div>
-</div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-    <a href="index.php?tab=loader" class="btn btn-secondary me-md-2">
-        <i class="fas fa-arrow-left me-2"></i>Back
-    </a>
-    <a href="index.php?tab=upload" class="btn btn-primary">
-        <i class="fas fa-redo me-2"></i>Start New Project
-    </a>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Project Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="summary-item d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <div>
+                        <i class="fas fa-file-code text-primary me-2"></i>
+                        Original File
+                    </div>
+                    <div class="">
+                        <?php echo htmlspecialchars($original_filename); ?>
+                    </div>
+                </div>
+
+                <div class="summary-item d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <div>
+                        <i class="fas fa-puzzle-piece text-primary me-2"></i>
+                        Chunks Created
+                    </div>
+                    <div class="">
+                        <?php echo $chunk_count; ?> chunks
+                    </div>
+                </div>
+
+                <div class="summary-item d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <div>
+                        <i class="fas fa-lock text-primary me-2"></i>
+                        Encryption
+                    </div>
+                    <div class="">
+                        AES-256-CBC
+                    </div>
+                </div>
+
+                <div class="summary-item d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <div>
+                        <i class="fas fa-key text-primary me-2"></i>
+                        License Status
+                    </div>
+                    <div class="text-success">
+                        <?php echo !empty($license_file) ? 'Created' : 'Not Created'; ?>
+                    </div>
+                </div>
+
+                <div class="summary-item d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <div>
+                        <i class="fas fa-calendar-alt text-primary me-2"></i>
+                        Created On
+                    </div>
+                    <div class="">
+                        <?php echo date('Y-m-d H:i'); ?>
+                    </div>
+                </div>
+
+                <div class="actions mt-4">
+                    <a href="index.php?tab=upload" class="btn btn-outline-primary d-block mb-3">
+                        <i class="fas fa-redo me-2"></i> Start New Project
+                    </a>
+                    <a href="index.php?action=clear_all" class="btn btn-outline-danger d-block">
+                        <i class="fas fa-trash me-2"></i> Clear All Data
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                </div>
+                <p class="text-center mb-0">
+                    <strong>Thank you for using ChunkShield!</strong><br>
+                    Your PHP code is now protected with advanced security measures.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>

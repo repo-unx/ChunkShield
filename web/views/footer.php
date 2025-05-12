@@ -7,16 +7,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 text-md-start">
-                    <h5><i class="fas fa-shield-alt me-2"></i> PHP Obfuscator Pro</h5>
+                    <h5><i class="fas fa-shield-alt me-2"></i> ChunkShield</h5>
                     <p class="small mb-0">Secure your PHP applications with advanced obfuscation, encryption, and license protection.</p>
                 </div>
                 <div class="col-md-4 text-md-center">
-                    <p class="mb-0">&copy; <?php echo date('Y'); ?> PHP Obfuscator Pro</p>
+                    <p class="mb-0">&copy; <?php echo date('Y'); ?> ChunkShield</p>
                     <p class="small mb-0">Version 1.0.0</p>
                 </div>
                 <div class="col-md-4 text-md-end">
                     <div class="d-flex justify-content-md-end justify-content-center">
-                        <a href="#" class="text-white me-3"><i class="fab fa-github"></i></a>
+                        <a href="https://github.com/repo-unx/ChunkShield" class="text-white me-3" target="_blank"><i class="fab fa-github"></i></a>
                         <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="text-white"><i class="fas fa-envelope"></i></a>
                     </div>

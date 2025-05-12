@@ -1,511 +1,116 @@
-/**
- * Main JavaScript for PHP Obfuscation Tool - Modern UI Version
- */
-
 document.addEventListener('DOMContentLoaded', function() {
-    // File Upload Preview
-    const fileInput = document.getElementById('phpFileUpload');
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            const fileName = e.target.files[0]?.name || 'No file chosen';
-            document.getElementById('file-name').textContent = fileName;
-            
-            // Enable the upload button if a file is selected
-            const uploadBtn = document.getElementById('uploadBtn');
-            if (uploadBtn) {
-                uploadBtn.disabled = !fileName || fileName === 'No file chosen';
-            }
-            
-            // Show file info if a file is selected
-            const fileInfoDiv = document.getElementById('fileInfo');
-            if (fileInfoDiv && e.target.files[0]) {
-                const file = e.target.files[0];
-                const fileSize = (file.size / 1024).toFixed(2) + ' KB';
-                fileInfoDiv.innerHTML = `
-                    <div class="alert alert-info mt-3">
-                        <strong>File: </strong>${file.name}<br>
-                        <strong>Size: </strong>${fileSize}<br>
-                        <strong>Type: </strong>${file.type}
-                    </div>
-                `;
-                fileInfoDiv.classList.remove('d-none');
-            }
-        });
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const themeIndicator = document.querySelector('.theme-indicator');
+    
+    // Check for saved theme preference or use system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Set initial theme
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.body.classList.add('dark-mode');
+        themeIndicator.textContent = 'Dark Mode';
+    } else {
+        themeIndicator.textContent = 'Light Mode';
     }
     
-    // Form submission loading state
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function() {
-            const submitButton = this.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
-            }
+    // Toggle theme on click
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
             
-            // Show progress bar if it exists
-            const progressBar = document.getElementById('progressBar');
-            if (progressBar) {
-                progressBar.classList.remove('d-none');
-                simulateProgress();
-            }
-        });
-    });
-    
-    // Simulate progress for progress bars
-    function simulateProgress() {
-        const progressBar = document.querySelector('.progress-bar');
-        if (!progressBar) return;
-        
-        let width = 0;
-        const interval = setInterval(function() {
-            if (width >= 90) {
-                clearInterval(interval);
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeIndicator.textContent = 'Dark Mode';
             } else {
-                width += Math.floor(Math.random() * 10) + 1;
-                if (width > 90) width = 90;
-                progressBar.style.width = width + '%';
-                progressBar.setAttribute('aria-valuenow', width);
-                progressBar.textContent = width + '%';
+                localStorage.setItem('theme', 'light');
+                themeIndicator.textContent = 'Light Mode';
             }
-        }, 300);
+        });
     }
     
-    // Copy to clipboard functionality
-    const copyButtons = document.querySelectorAll('.btn-copy');
+    // File Upload Display
+    const fileInput = document.querySelector('input[type="file"]');
+    const fileNameDisplay = document.querySelector('.file-name-display');
+    
+    if (fileInput && fileNameDisplay) {
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                const fileSize = formatFileSize(fileInput.files[0].size);
+                
+                fileNameDisplay.innerHTML = `<i class="fas fa-file-code me-2"></i>${fileName} <span class="text-muted">(${fileSize})</span>`;
+                fileNameDisplay.classList.remove('d-none');
+            } else {
+                fileNameDisplay.classList.add('d-none');
+            }
+        });
+    }
+    
+    // Copy to Clipboard Functionality
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    
     copyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const targetId = this.getAttribute('data-target');
             const targetElement = document.getElementById(targetId);
             
-            if (!targetElement) return;
-            
-            let textToCopy = targetElement.textContent;
-            // Special handling for input elements
-            if (targetElement.tagName === 'INPUT') {
-                textToCopy = targetElement.value;
-            }
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                // Update button text temporarily
+            if (targetElement) {
+                // Create a temporary textarea to copy text
+                const textarea = document.createElement('textarea');
+                textarea.value = targetElement.textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                // Change button text temporarily
                 const originalText = this.innerHTML;
                 this.innerHTML = '<i class="fas fa-check"></i> Copied!';
                 setTimeout(() => {
                     this.innerHTML = originalText;
                 }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
+            }
         });
     });
     
-    // Tooltips initialization
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    if (tooltipTriggerList.length > 0) {
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-    }
+    // Auto-hide alerts after 5 seconds
+    const autoHideAlerts = document.querySelectorAll('.alert:not(.alert-permanent)');
     
-    // Auto-dismiss alerts after 5 seconds
-    const alerts = document.querySelectorAll('.alert-dismissible');
-    alerts.forEach(alert => {
+    autoHideAlerts.forEach(alert => {
         setTimeout(() => {
-            const closeButton = alert.querySelector('.btn-close');
-            if (closeButton) {
-                closeButton.click();
+            if (alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
             }
         }, 5000);
     });
     
-    // Toggle options sections
-    const toggleButtons = document.querySelectorAll('.toggle-options');
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const target = document.getElementById(targetId);
-            
-            if (target) {
-                if (target.classList.contains('d-none')) {
-                    target.classList.remove('d-none');
-                    this.innerHTML = this.innerHTML.replace('Show', 'Hide');
-                } else {
-                    target.classList.add('d-none');
-                    this.innerHTML = this.innerHTML.replace('Hide', 'Show');
-                }
-            }
-        });
+    // Format file size to human-readable format
+    function formatFileSize(bytes) {
+        const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes === 0) return '0 B';
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    }
+    
+    // Initialize tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    
+    // Initialize popovers
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+    
+    // Add active class to nav items based on current section
+    const currentSection = window.location.hash.substring(1) || 'upload';
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        const linkSection = link.getAttribute('href').split('#')[1];
+        if (linkSection === currentSection) {
+            link.classList.add('active');
+        }
     });
-    
-    // Generate random encryption key
-    const generateKeyButton = document.getElementById('generateKey');
-    if (generateKeyButton) {
-        generateKeyButton.addEventListener('click', function() {
-            const keyInput = document.getElementById('encryption_key');
-            if (keyInput) {
-                const randomKey = generateRandomString(32);
-                keyInput.value = randomKey;
-            }
-        });
-    }
-    
-    // Generate random license key
-    const generateLicenseKeyButton = document.getElementById('generateLicenseKey');
-    if (generateLicenseKeyButton) {
-        generateLicenseKeyButton.addEventListener('click', function() {
-            const licenseKeyInput = document.getElementById('license_key');
-            if (licenseKeyInput) {
-                const licenseKey = generateLicenseKey();
-                licenseKeyInput.value = licenseKey;
-            }
-        });
-    }
-
-    // Domain input validation for license generation
-    const domainInput = document.getElementById('license_domain');
-    if (domainInput) {
-        domainInput.addEventListener('input', function() {
-            validateDomainInput(this);
-        });
-    }
-    
-    // Runtime fingerprinting validation
-    const fpDomainInput = document.getElementById('allowed_domains');
-    if (fpDomainInput) {
-        fpDomainInput.addEventListener('input', function() {
-            validateFingerPrintDomains(this);
-        });
-    }
-    
-    const fpIPInput = document.getElementById('allowed_ips');
-    if (fpIPInput) {
-        fpIPInput.addEventListener('input', function() {
-            validateIPAddresses(this);
-        });
-    }
-
-    // Expiration date picker - default to 1 year from now
-    const expiryInput = document.getElementById('license_expiry');
-    if (expiryInput) {
-        const oneYearFromNow = new Date();
-        oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
-        const formattedDate = oneYearFromNow.toISOString().split('T')[0];
-        expiryInput.value = formattedDate;
-        expiryInput.setAttribute('min', new Date().toISOString().split('T')[0]);
-    }
-
-    // License preview update
-    const licenseFormInputs = document.querySelectorAll('.license-form input, .license-form select');
-    if (licenseFormInputs.length > 0) {
-        licenseFormInputs.forEach(input => {
-            input.addEventListener('input', updateLicensePreview);
-            input.addEventListener('change', updateLicensePreview);
-        });
-        // Initial update
-        updateLicensePreview();
-    }
-
-    // Security level slider
-    const securitySlider = document.getElementById('security_level');
-    const securityValue = document.getElementById('security_value');
-    if (securitySlider && securityValue) {
-        securitySlider.addEventListener('input', function() {
-            securityValue.textContent = this.value;
-            updateSecurityOptions(parseInt(this.value));
-        });
-        // Initial update
-        if (securityValue.textContent === '') {
-            securityValue.textContent = securitySlider.value;
-            updateSecurityOptions(parseInt(securitySlider.value));
-        }
-    }
-
-    // Switch license type
-    const licenseTypeSelect = document.getElementById('license_type');
-    const certOptionsDiv = document.getElementById('certificate_options');
-    if (licenseTypeSelect && certOptionsDiv) {
-        licenseTypeSelect.addEventListener('change', function() {
-            if (this.value === 'certificate') {
-                certOptionsDiv.classList.remove('d-none');
-            } else {
-                certOptionsDiv.classList.add('d-none');
-            }
-            updateLicensePreview();
-        });
-    }
-
-    // Tab navigation handler to maintain state
-    const tabLinks = document.querySelectorAll('.nav-tabs .nav-link:not(.disabled)');
-    tabLinks.forEach(tabLink => {
-        tabLink.addEventListener('click', function(e) {
-            if (this.classList.contains('disabled')) {
-                e.preventDefault();
-                return false;
-            }
-        });
-    });
-    
-    // Function to generate random string
-    function generateRandomString(length) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return result;
-    }
-
-    // Function to generate license key
-    function generateLicenseKey() {
-        const segments = 4;
-        const segmentLength = 5;
-        let license = '';
-        
-        for (let i = 0; i < segments; i++) {
-            for (let j = 0; j < segmentLength; j++) {
-                // Use uppercase letters and numbers for readability
-                const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                license += charset.charAt(Math.floor(Math.random() * charset.length));
-            }
-            if (i < segments - 1) license += '-';
-        }
-        
-        return license;
-    }
-
-    // Function to validate domain input
-    function validateDomainInput(input) {
-        const value = input.value.trim();
-        const domainRegex = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-        
-        if (value === '') {
-            input.classList.remove('is-invalid', 'is-valid');
-        } else if (domainRegex.test(value)) {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-        } else {
-            input.classList.remove('is-valid');
-            input.classList.add('is-invalid');
-        }
-    }
-    
-    // Function to validate fingerprinting domains (allows wildcards and comma-separated values)
-    function validateFingerPrintDomains(input) {
-        if (!input) return;
-        
-        const value = input.value.trim();
-        if (value === '') {
-            input.classList.remove('is-invalid', 'is-valid');
-            return;
-        }
-        
-        const domains = value.split(',');
-        let isValid = true;
-        
-        for (let domain of domains) {
-            domain = domain.trim();
-            if (domain === '') continue;
-            
-            // Check for wildcard domain format
-            if (domain.startsWith('*.')) {
-                domain = domain.substring(2); // Remove *. prefix
-            }
-            
-            // Basic domain validation
-            const domainRegex = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-            if (!domainRegex.test(domain)) {
-                isValid = false;
-                break;
-            }
-        }
-        
-        if (isValid) {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-        } else {
-            input.classList.remove('is-valid');
-            input.classList.add('is-invalid');
-        }
-    }
-    
-    // Function to validate IP addresses (allows comma-separated values and basic CIDR)
-    function validateIPAddresses(input) {
-        if (!input) return;
-        
-        const value = input.value.trim();
-        if (value === '') {
-            input.classList.remove('is-invalid', 'is-valid');
-            return;
-        }
-        
-        // Allow asterisk for "any IP"
-        if (value === '*') {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-            return;
-        }
-        
-        const ips = value.split(',');
-        let isValid = true;
-        let errorMessage = '';
-        
-        for (let ip of ips) {
-            ip = ip.trim();
-            if (ip === '') continue;
-            if (ip === '*' || ip === 'localhost') continue; // Allow wildcards and localhost
-            
-            // Handle CIDR notation
-            if (ip.includes('/')) {
-                const parts = ip.split('/');
-                ip = parts[0];
-                const cidr = parseInt(parts[1]);
-                
-                // Validate CIDR range
-                if (isNaN(cidr) || cidr < 0 || cidr > 32) {
-                    isValid = false;
-                    errorMessage = 'CIDR mask must be between 0 and 32';
-                    break;
-                }
-            }
-            
-            // Basic IPv4 validation
-            const ipRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
-            const matches = ip.match(ipRegex);
-            if (!matches) {
-                isValid = false;
-                break;
-            }
-            
-            // Check each octet is between 0-255
-            for (let i = 1; i <= 4; i++) {
-                const octet = parseInt(matches[i]);
-                if (octet < 0 || octet > 255) {
-                    isValid = false;
-                    break;
-                }
-            }
-            
-            if (!isValid) break;
-        }
-        
-        if (isValid) {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-        } else {
-            input.classList.remove('is-valid');
-            input.classList.add('is-invalid');
-        }
-    }
-
-    // Function to update license preview
-    function updateLicensePreview() {
-        const previewElement = document.getElementById('license_preview');
-        if (!previewElement) return;
-
-        const licenseKey = document.getElementById('license_key')?.value || 'XXXXX-XXXXX-XXXXX-XXXXX';
-        const domain = document.getElementById('license_domain')?.value || 'example.com';
-        const expiryInput = document.getElementById('license_expiry');
-        const licenseType = document.getElementById('license_type')?.value || 'license';
-        
-        let expiryDate = 'Unknown';
-        if (expiryInput && expiryInput.value) {
-            const date = new Date(expiryInput.value);
-            expiryDate = date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-
-        const licenseTypeText = licenseType === 'certificate' ? 'Certificate' : 'License';
-        
-        let previewHtml = `
-            <div class="mb-3">
-                <strong>${licenseTypeText} Key:</strong> <span class="text-primary">${licenseKey}</span>
-            </div>
-            <div class="mb-3">
-                <strong>Domain:</strong> ${domain}
-            </div>
-            <div class="mb-3">
-                <strong>Expiry Date:</strong> ${expiryDate}
-            </div>
-        `;
-
-        if (licenseType === 'certificate') {
-            const issuerName = document.getElementById('cert_issuer')?.value || 'Your Company';
-            const certType = document.getElementById('cert_type')?.value || 'Standard';
-            
-            previewHtml += `
-                <div class="mb-3">
-                    <strong>Issuer:</strong> ${issuerName}
-                </div>
-                <div class="mb-3">
-                    <strong>Certificate Type:</strong> ${certType}
-                </div>
-                <div class="mt-3 text-center">
-                    <div class="p-2 border border-primary rounded d-inline-block">
-                        <i class="fas fa-certificate text-primary"></i> Digitally Signed
-                    </div>
-                </div>
-            `;
-        }
-
-        previewElement.innerHTML = previewHtml;
-    }
-
-    // Function to update security options based on slider
-    function updateSecurityOptions(level) {
-        const encryptCheckbox = document.getElementById('encrypt_license');
-        const signatureCheckbox = document.getElementById('add_signature');
-        const hashingCheckbox = document.getElementById('add_hashing');
-        
-        if (!encryptCheckbox || !signatureCheckbox || !hashingCheckbox) return;
-        
-        if (level >= 1) {
-            encryptCheckbox.checked = true;
-        }
-        
-        if (level >= 2) {
-            signatureCheckbox.checked = true;
-        }
-        
-        if (level >= 3) {
-            hashingCheckbox.checked = true;
-        }
-    }
-
-    // Dark mode toggle with improved functionality
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark ? 'true' : 'false');
-            
-            // Update active theme indication in UI
-            document.querySelectorAll('.theme-indicator').forEach(indicator => {
-                indicator.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-            });
-        });
-        
-        // Check saved preference and apply on load
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-            // Update any theme indicators
-            document.querySelectorAll('.theme-indicator').forEach(indicator => {
-                indicator.textContent = 'Dark Mode';
-            });
-        }
-    }
-    
-    // Clear all confirmation
-    const clearAllButton = document.querySelector('a[href*="clear_all"]');
-    if (clearAllButton) {
-        clearAllButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            if (confirm('Are you sure you want to clear all progress? This action cannot be undone.')) {
-                window.location.href = this.getAttribute('href');
-            }
-        });
-    }
 });

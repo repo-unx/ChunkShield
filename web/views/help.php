@@ -1,315 +1,219 @@
-<div class="container">
-    <h2 class="mb-4"><i class="fas fa-question-circle me-2"></i>Help Center</h2>
+<div class="section-header mb-4">
+    <h2>Help Center</h2>
+    <p class="">Get assistance with using ChunkShield</p>
+</div>
 
-    <div class="row">
-        <div class="col-md-3 mb-4">
-            <div class="card sticky-top" style="top: 20px;">
-                <div class="card-header">
-                    <i class="fas fa-list me-2"></i>Table of Contents
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        <a href="#getting-started" class="list-group-item list-group-item-action">Getting Started</a>
-                        <a href="#common-errors" class="list-group-item list-group-item-action">Common Errors</a>
-                        <a href="#troubleshooting" class="list-group-item list-group-item-action">Troubleshooting</a>
-                        <a href="#faq" class="list-group-item list-group-item-action">Frequently Asked Questions</a>
-                        <a href="#contact" class="list-group-item list-group-item-action">Contact Support</a>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Quick Start Guide</h5>
+            </div>
+            <div class="card-body">
+                <div class="steps-container">
+                    <div class="d-flex mb-4">
+                        <div class="step-content ms-3">
+                            <h5>Upload Your PHP File</h5>
+                            <p>Start by uploading the PHP file you want to protect. The file should be a valid PHP script with no syntax errors.</p>
+                            <a href="index.php?tab=upload" class="btn btn-sm btn-outline-primary">Go to Upload</a>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="step-content ms-3">
+                            <h5>Configure Obfuscation</h5>
+                            <p>Select which obfuscation techniques to apply to your code. You can choose to remove comments, minimize whitespace, rename variables, and add junk code.</p>
+                            <a href="index.php?tab=obfuscate" class="btn btn-sm btn-outline-primary">Go to Obfuscate</a>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="step-content ms-3">
+                            <h5>Set Up Chunking & Encryption</h5>
+                            <p>Configure how your code will be split into chunks and encrypted. You can specify chunk size, encryption method, and other parameters.</p>
+                            <a href="index.php?tab=chunk" class="btn btn-sm btn-outline-primary">Go to Chunking</a>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="step-content ms-3">
+                            <h5>Generate a Loader</h5>
+                            <p>Create a polymorphic loader script that will decrypt and execute your protected code at runtime. You can add junk eval blocks and environment fingerprinting.</p>
+                            <a href="index.php?tab=loader" class="btn btn-sm btn-outline-primary">Go to Loader</a>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="step-content ms-3">
+                            <h5>Add License Protection (Optional)</h5>
+                            <p>Create license restrictions to ensure your code only runs in authorized environments. You can restrict by domain, IP, and path.</p>
+                            <a href="index.php?tab=license" class="btn btn-sm btn-outline-primary">Go to License</a>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex">
+                        <div class="step-content ms-3">
+                            <h5>Download Protected Files</h5>
+                            <p>Download the final protected package, including the loader and encrypted chunks. Deploy these files to your server.</p>
+                            <a href="index.php?tab=output" class="btn btn-sm btn-outline-primary">Go to Output</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-9">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div id="getting-started" class="mb-5">
-                        <h3 class="border-bottom pb-2 mb-3"><i class="fas fa-play me-2 text-primary"></i>Getting Started</h3>
-                        
-                        <h4 class="mt-4">How to Use This Tool</h4>
-                        <p>The PHP Obfuscator Pro is a powerful tool designed to protect your PHP code through various security measures. Here's how to use it:</p>
-                        
-                        <div class="card mb-4 bg-light">
-                            <div class="card-body">
-                                <h5 class="mb-3">Step-by-Step Process:</h5>
-                                <ol class="mb-0">
-                                    <li class="mb-2"><strong>Upload</strong> - Upload your PHP source file.</li>
-                                    <li class="mb-2"><strong>Obfuscate</strong> - Apply obfuscation techniques to make your code harder to understand.</li>
-                                    <li class="mb-2"><strong>Chunk</strong> - Break your code into encrypted chunks for additional security.</li>
-                                    <li class="mb-2"><strong>Loader</strong> - Generate a loader script that will decrypt and execute your chunks at runtime.</li>
-                                    <li class="mb-2"><strong>License</strong> - (Optional) Create license files to control where your code can run.</li>
-                                    <li class="mb-2"><strong>Output</strong> - Download all generated files in a convenient package.</li>
-                                </ol>
-                            </div>
-                        </div>
-                        
-                        <h4 class="mt-4">Supported PHP Versions</h4>
-                        <p>The obfuscator supports PHP versions 7.2 and above. For best results, we recommend PHP 8.0+.</p>
-                    </div>
-                    
-                    <div id="common-errors" class="mb-5">
-                        <h3 class="border-bottom pb-2 mb-3"><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Common Errors</h3>
-                        
-                        <div class="accordion" id="errorsAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                        File Upload Errors
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#errorsAccordion">
-                                    <div class="accordion-body">
-                                        <ul>
-                                            <li><strong>File too large</strong>: The maximum upload size is 10MB. If your file exceeds this limit, consider breaking it into smaller modules.</li>
-                                            <li><strong>Invalid file type</strong>: Only PHP files (.php extension) are accepted.</li>
-                                            <li><strong>Upload permission error</strong>: Ensure your browser has permission to upload files.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        Obfuscation Errors
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#errorsAccordion">
-                                    <div class="accordion-body">
-                                        <ul>
-                                            <li><strong>Syntax errors</strong>: If your original code contains syntax errors, the obfuscation process may fail. Ensure your code has valid PHP syntax.</li>
-                                            <li><strong>Timeout errors</strong>: Very large files may trigger timeout errors. Try obfuscating smaller sections of your code.</li>
-                                            <li><strong>Memory limit exceeded</strong>: Complex code structures may require more memory than available. Simplify your code or increase server memory limits.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                        Loader Errors
-                                    </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#errorsAccordion">
-                                    <div class="accordion-body">
-                                        <ul>
-                                            <li><strong>Chunk files not found</strong>: Ensure all chunk files are properly uploaded in their expected directory structure.</li>
-                                            <li><strong>License verification failed</strong>: If you're using domain-locked licenses, ensure you're testing on the correct domain.</li>
-                                            <li><strong>Encryption key errors</strong>: Make sure the key used in your loader matches the key used for encryption.</li>
-                                            <li><strong>Domain validation failed</strong>: When using runtime fingerprinting, ensure the domain restrictions allow execution in your current environment.</li>
-                                            <li><strong>Checksum mismatch</strong>: This indicates possible corruption or modification of chunk files. Regenerate and re-upload the files.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFingerprinting">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFingerprinting" aria-expanded="false" aria-controls="collapseFingerprinting">
-                                        Runtime Fingerprinting Errors
-                                    </button>
-                                </h2>
-                                <div id="collapseFingerprinting" class="accordion-collapse collapse" aria-labelledby="headingFingerprinting" data-bs-parent="#errorsAccordion">
-                                    <div class="accordion-body">
-                                        <ul>
-                                            <li><strong>Domain validation failed</strong>: The code is running on a domain not included in the allowed domains list.</li>
-                                            <li><strong>IP validation failed</strong>: The server IP address doesn't match any allowed IPs.</li>
-                                            <li><strong>Path validation failed</strong>: The code is being executed from an unauthorized file path.</li>
-                                            <li><strong>Environment data missing</strong>: The server environment doesn't provide expected values (like HTTP_HOST).</li>
-                                            <li><strong>Multiple validation failures</strong>: When encountering multiple errors, address them one at a time starting with domain validation.</li>
-                                        </ul>
-                                        <p><strong>Tip:</strong> For development purposes, you can temporarily comment out the die() statements in the validation code to see all validation errors without halting execution.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                        Headers Already Sent Error
-                                    </button>
-                                </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#errorsAccordion">
-                                    <div class="accordion-body">
-                                        <p>The "Headers already sent" error typically occurs when there is output before using functions like <code>header()</code> or <code>session_start()</code>.</p>
-                                        <p><strong>Common causes:</strong></p>
-                                        <ul>
-                                            <li>Whitespace or text output before the <code>&lt;?php</code> tag</li>
-                                            <li>Echo statements or HTML content before header calls</li>
-                                            <li>BOM (Byte Order Mark) in UTF-8 encoded files</li>
-                                        </ul>
-                                        <p><strong>Solution:</strong> Ensure no output is sent before header or session functions. When using the obfuscated code, include it at the very beginning of your script.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="troubleshooting" class="mb-5">
-                        <h3 class="border-bottom pb-2 mb-3"><i class="fas fa-tools me-2 text-info"></i>Troubleshooting</h3>
-                        
-                        <h4 class="mt-4">Debugging Obfuscated Code</h4>
-                        <p>When your obfuscated code doesn't work as expected, follow these steps:</p>
-                        
-                        <div class="card mb-4 bg-light">
-                            <div class="card-body">
-                                <ol>
-                                    <li>Test your original code first to ensure it works correctly before obfuscation.</li>
-                                    <li>Start with minimal obfuscation options and gradually increase complexity.</li>
-                                    <li>If using anti-debugging features, temporarily disable them during testing.</li>
-                                    <li>Check for PHP error logs on your server to identify specific issues.</li>
-                                    <li>Ensure all file paths in your loader script are correct.</li>
-                                </ol>
-                            </div>
-                        </div>
-                        
-                        <h4 class="mt-4">License Verification Issues</h4>
-                        <p>If your license verification is failing:</p>
-                        <ul>
-                            <li>Verify the domain in the license matches the domain where the code is running.</li>
-                            <li>Check if the license has expired.</li>
-                            <li>Ensure all license files (.lic and .key if applicable) are in the correct location.</li>
-                            <li>Check for any errors in your license generation parameters.</li>
-                        </ul>
-                        
-                        <h4 class="mt-4">Runtime Fingerprinting Issues</h4>
-                        <p>If you're having problems with runtime fingerprinting validation:</p>
-                        <ul>
-                            <li><strong>Domain Validation</strong>: 
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Common Issues</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="issuesAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="issueOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#issueCollapseOne" aria-expanded="true" aria-controls="issueCollapseOne">
+                                Protected code doesn't execute properly
+                            </button>
+                        </h2>
+                        <div id="issueCollapseOne" class="accordion-collapse collapse show" aria-labelledby="issueOne" data-bs-parent="#issuesAccordion">
+                            <div class="accordion-body">
+                                <p>If your protected code isn't working correctly after deployment, check the following:</p>
                                 <ul>
-                                    <li>Ensure the domain format is correct (e.g., example.com, *.example.com)</li>
-                                    <li>For localhost testing, include "localhost" in your allowed domains</li>
-                                    <li>Check that $_SERVER['HTTP_HOST'] is available in your environment</li>
+                                    <li>Ensure the loader.php file and chunks/ directory are in the same relative location</li>
+                                    <li>Check that all chunk files were uploaded correctly</li>
+                                    <li>Verify that your server has the required PHP extensions (openssl, zlib)</li>
+                                    <li>Check server error logs for specific error messages</li>
+                                    <li>If using license protection, verify that the execution environment meets the license restrictions</li>
                                 </ul>
-                            </li>
-                            <li><strong>IP Validation</strong>:
-                                <ul>
-                                    <li>For development, include your local IP and 127.0.0.1</li>
-                                    <li>When using proxy servers, the detected IP might be different from expected</li>
-                                </ul>
-                            </li>
-                            <li><strong>Path Validation</strong>:
-                                <ul>
-                                    <li>Check the actual server path using a phpinfo() script</li>
-                                    <li>Include both absolute and relative paths if unsure</li>
-                                    <li>Account for symbolic links if used in your hosting environment</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div id="faq" class="mb-5">
-                        <h3 class="border-bottom pb-2 mb-3"><i class="fas fa-question me-2 text-success"></i>Frequently Asked Questions</h3>
-                        
-                        <div class="accordion" id="faqAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">
-                                        Is my code secure after obfuscation?
-                                    </button>
-                                </h2>
-                                <div id="faqOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>Obfuscation significantly increases the difficulty of understanding your code, but it's not 100% unbreakable. Combined with chunking, encryption, and license verification, it provides a strong level of protection against casual inspection and automated deobfuscation tools.</p>
-                                        <p>For maximum security, combine obfuscation with server-side validation and keep critical business logic on your server.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">
-                                        Will obfuscation affect performance?
-                                    </button>
-                                </h2>
-                                <div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>There is a small performance overhead with obfuscated and encrypted code, primarily during the initial load when decryption occurs. For most applications, this difference is negligible.</p>
-                                        <p>The anti-debugger and anti-logger features may add additional overhead, so use them judiciously for performance-critical applications.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">
-                                        How do I update obfuscated code?
-                                    </button>
-                                </h2>
-                                <div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>When you need to update your obfuscated code:</p>
-                                        <ol>
-                                            <li>Start with your original (non-obfuscated) source code</li>
-                                            <li>Make your changes and test thoroughly</li>
-                                            <li>Run the obfuscation process again</li>
-                                            <li>Replace all files (loader, chunks, etc.) on your server</li>
-                                        </ol>
-                                        <p>It's important to maintain your original source code in a secure location, as deobfuscating the protected code for updates is extremely difficult.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour">
-                                        What is Runtime Fingerprinting and how does it work?
-                                    </button>
-                                </h2>
-                                <div id="faqFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>Runtime Fingerprinting is an advanced security feature that validates the environment where your code is executing. It ensures your code only runs in authorized contexts.</p>
-                                        <p><strong>Key components:</strong></p>
-                                        <ul>
-                                            <li><strong>Domain Validation</strong> - Restricts execution to specific domains (e.g., example.com, *.yourdomain.com)</li>
-                                            <li><strong>IP Address Validation</strong> - Limits execution to specific IPs or ranges</li>
-                                            <li><strong>Path Validation</strong> - Ensures code only runs from approved server paths</li>
-                                        </ul>
-                                        <p>By default, validation warnings are logged but don't block execution. To enforce strict validation, you can modify the loader to halt execution when validation fails.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive">
-                                        What is Junk Code Injection?
-                                    </button>
-                                </h2>
-                                <div id="faqFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        <p>Junk Code Injection is an anti-reverse engineering technique that adds decoy code to your protected files. This makes it harder for attackers to identify the real functionality.</p>
-                                        <p><strong>Benefits include:</strong></p>
-                                        <ul>
-                                            <li>Confusing decompilers and code analysis tools</li>
-                                            <li>Creating misleading code paths that waste an attacker's time</li>
-                                            <li>Adding random cryptographic operations as distractions</li>
-                                            <li>Making automated deobfuscation tools less effective</li>
-                                        </ul>
-                                        <p>The injected code is designed to have minimal performance impact while maximizing confusion for potential attackers.</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div id="contact" class="mb-4">
-                        <h3 class="border-bottom pb-2 mb-3"><i class="fas fa-envelope me-2 text-primary"></i>Contact Support</h3>
-                        
-                        <p>If you're experiencing issues that aren't covered in this help center, you can reach out to our support team.</p>
-                        
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h5><i class="fas fa-paper-plane me-2"></i>Contact Options:</h5>
-                                <ul class="mb-0">
-                                    <li><strong>Email:</strong> <a href="mailto:support@phpobfuscator.pro">support@phpobfuscator.pro</a></li>
-                                    <li><strong>GitHub Issues:</strong> <a href="https://github.com/phpobfuscator/issues" target="_blank">Report a Bug</a></li>
-                                    <li><strong>Documentation:</strong> <a href="index.php?tab=docs">View Full Documentation</a></li>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="issueTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issueCollapseTwo" aria-expanded="false" aria-controls="issueCollapseTwo">
+                                "Failed to decrypt chunk" error
+                            </button>
+                        </h2>
+                        <div id="issueCollapseTwo" class="accordion-collapse collapse" aria-labelledby="issueTwo" data-bs-parent="#issuesAccordion">
+                            <div class="accordion-body">
+                                <p>This error typically occurs when:</p>
+                                <ul>
+                                    <li>A chunk file is corrupted or incomplete</li>
+                                    <li>The encryption key in the loader doesn't match the one used to encrypt the chunks</li>
+                                    <li>The OpenSSL extension is missing or misconfigured</li>
                                 </ul>
+                                <p><strong>Solution:</strong> Re-generate the protected package and upload all files again. Ensure all files are transferred completely.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="issueThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issueCollapseThree" aria-expanded="false" aria-controls="issueCollapseThree">
+                                "License verification failed" error
+                            </button>
+                        </h2>
+                        <div id="issueCollapseThree" class="accordion-collapse collapse" aria-labelledby="issueThree" data-bs-parent="#issuesAccordion">
+                            <div class="accordion-body">
+                                <p>The loader is detecting that the execution environment doesn't match the license restrictions. Check:</p>
+                                <ul>
+                                    <li>Domain: Ensure the website is running on one of the allowed domains</li>
+                                    <li>IP Address: Verify the server's IP matches the allowed IP(s)</li>
+                                    <li>Path: Check that the script is being executed from an allowed directory path</li>
+                                    <li>Expiration: Verify the license hasn't expired</li>
+                                </ul>
+                                <p><strong>Solution:</strong> Update the license file with the correct restrictions or generate a new protected package with updated license settings.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="issueFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issueCollapseFour" aria-expanded="false" aria-controls="issueCollapseFour">
+                                Obfuscation breaks functionality
+                            </button>
+                        </h2>
+                        <div id="issueCollapseFour" class="accordion-collapse collapse" aria-labelledby="issueFour" data-bs-parent="#issuesAccordion">
+                            <div class="accordion-body">
+                                <p>In some cases, aggressive obfuscation might break code functionality, especially for complex PHP applications. If this happens:</p>
+                                <ul>
+                                    <li>Disable variable renaming, which is the most likely cause of issues</li>
+                                    <li>Reduce junk code density or disable junk code insertion completely</li>
+                                    <li>Keep whitespace removal and comment removal, which are generally safe</li>
+                                </ul>
+                                <p><strong>Solution:</strong> Start with minimal obfuscation and gradually add more aggressive techniques while testing functionality at each step.</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Resources</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="index.php?tab=docs" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="fas fa-book text-primary me-3"></i>
+                        <div>
+                            <strong>Documentation</strong>
+                            <p class="mb-0 small ">Detailed guides on using ChunkShield</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/repo-unx/ChunkShield" class="list-group-item list-group-item-action d-flex align-items-center" target="_blank">
+                        <i class="fab fa-github text-primary me-3"></i>
+                        <div>
+                            <strong>GitHub Repository</strong>
+                            <p class="mb-0 small ">Source code and issue tracking</p>
+                        </div>
+                    </a>
+                    <div class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-envelope text-primary me-3"></i>
+                        <div>
+                            <strong>Support Email</strong>
+                            <p class="mb-0 small ">support@chunkshield.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>System Requirements</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fab fa-php text-primary me-3"></i>
+                        <div>
+                            <strong>PHP Version</strong>
+                            <p class="mb-0 small ">PHP 5.6 or higher (PHP 7.x/8.x recommended)</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-lock text-primary me-3"></i>
+                        <div>
+                            <strong>Required Extensions</strong>
+                            <p class="mb-0 small ">openssl, zlib</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-server text-primary me-3"></i>
+                        <div>
+                            <strong>Server</strong>
+                            <p class="mb-0 small ">Any web server supporting PHP (Apache, Nginx, etc.)</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-file-code text-primary me-3"></i>
+                        <div>
+                            <strong>Input Files</strong>
+                            <p class="mb-0 small ">Valid PHP files with no syntax errors</p>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

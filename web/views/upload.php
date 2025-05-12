@@ -1,92 +1,153 @@
-<h2 class="page-title"><i class="fas fa-upload me-2"></i>Upload PHP File</h2>
+<div class="section-header mb-4">
+    <h2>Input PHP Code</h2>
+    <p class="">Start by uploading a PHP file or paste your PHP code directly (without PHP tags) to protect it.</p>
+</div>
 
 <div class="row">
-    <div class="col-lg-5 mb-4">
-        <div class="card h-100">
+    <div class="col-lg-8">
+        <div class="card">
             <div class="card-header">
-                <i class="fas fa-info-circle me-2"></i>Instructions
+                <ul class="nav nav-tabs card-header-tabs" id="inputTypeTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-content" type="button" role="tab" aria-controls="upload-content" aria-selected="true">
+                            <i class="fas fa-upload me-2"></i> Upload File
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="paste-tab" data-bs-toggle="tab" data-bs-target="#paste-content" type="button" role="tab" aria-controls="paste-content" aria-selected="false">
+                            <i class="fas fa-code me-2"></i> Paste Code
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="card-body">
-                <div class="mb-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-shield-alt"></i>
+                <div class="tab-content" id="inputTypeTabContent">
+                    <!-- File Upload Tab -->
+                    <div class="tab-pane fade show active" id="upload-content" role="tabpanel" aria-labelledby="upload-tab">
+                        <form method="post" enctype="multipart/form-data" action="index.php">
+                            <input type="hidden" name="action" value="upload">
+                            <input type="hidden" name="input_type" value="file">
+                            
+                            <div class="file-upload-wrapper">
+                                <div class="file-upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h4>Drag & Drop Your PHP File Here</h4>
+                                <p class="text">or click to browse</p>
+                                <div class="file-name-display mt-3 alert alert-info d-none"></div>
+                                <input type="file" name="phpFile" class="file-upload-input" accept=".php">
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-upload me-2"></i> Upload & Continue
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <h4 class="mb-3">Secure Your PHP Code</h4>
-                    <p>PHP Obfuscator Pro provides industry-leading code protection with multiple layers of security:</p>
-                </div>
-                
-                <div class="mb-4">
-                    <h5><i class="fas fa-random text-primary me-2"></i>Code Obfuscation</h5>
-                    <p class="text-muted small">Rename variables, remove whitespace, encode strings, and make your code unreadable to humans while keeping it fully functional.</p>
-                </div>
-                
-                <div class="mb-4">
-                    <h5><i class="fas fa-puzzle-piece text-primary me-2"></i>Chunk Encryption</h5>
-                    <p class="text-muted small">Split your PHP file into multiple encrypted chunks using industry-standard AES-256-CBC encryption.</p>
-                </div>
-                
-                <div class="mb-4">
-                    <h5><i class="fas fa-file-code text-primary me-2"></i>Loader Generation</h5>
-                    <p class="text-muted small">Create a specialized runtime loader that dynamically decrypts and executes your protected code.</p>
-                </div>
-                
-                <div class="mb-3">
-                    <h5><i class="fas fa-key text-primary me-2"></i>License Protection</h5>
-                    <p class="text-muted small">Generate domain-locked license files and certificates to prevent unauthorized use of your software.</p>
-                </div>
-                
-                <div class="alert alert-info">
-                    <i class="fas fa-lightbulb me-2"></i>Tip: Make sure your PHP code is valid and doesn't contain syntax errors before uploading.
+                    
+                    <!-- Paste Code Tab -->
+                    <div class="tab-pane fade" id="paste-content" role="tabpanel" aria-labelledby="paste-tab">
+                        <form method="post" action="index.php">
+                            <input type="hidden" name="action" value="upload">
+                            <input type="hidden" name="input_type" value="paste">
+                            
+                            <div class="mb-3">
+                                <label for="phpCode" class="form-label">PHP Code</label>
+                                <textarea name="phpCode" id="phpCode" class="form-control code-editor" rows="15" placeholder="<?php echo htmlspecialchars('<?php
+// Paste your PHP code here
+function example_function($param) {
+    return "Hello, " . $param;
+}
+
+$result = example_function("World");
+echo $result;
+?>'); ?>"><?php
+// Example PHP code
+function calculate_factorial($n) {
+    if ($n <= 1) {
+        return 1;
+    }
+    return $n * calculate_factorial($n - 1);
+}
+
+function calculate_fibonacci($n) {
+    if ($n <= 1) {
+        return $n;
+    }
+    return calculate_fibonacci($n - 1) + calculate_fibonacci($n - 2);
+}
+
+// Usage example
+$number = 5;
+echo "Factorial of {$number} is: " . calculate_factorial($number) . "\n";
+echo "Fibonacci number at position {$number} is: " . calculate_fibonacci($number);
+?></textarea>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-code me-2"></i> Process Code & Continue
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="col-lg-7">
-        <div class="card mb-4">
+    <div class="col-lg-4">
+        <div class="card">
             <div class="card-header">
-                <i class="fas fa-cloud-upload-alt me-2"></i>Upload Your PHP File
+                <h5>Protection Features</h5>
             </div>
             <div class="card-body">
-                <form action="index.php" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="upload">
-                    
-                    <div class="file-upload-wrapper">
-                        <input type="file" id="phpFileUpload" name="phpFile" class="file-upload-input" accept=".php">
-                        <div class="text-center">
-                            <i class="fas fa-file-code fa-3x mb-3 text-primary"></i>
-                            <h5>Drag and drop a PHP file or click to browse</h5>
-                            <p class="text-muted">Selected: <span id="file-name">No file chosen</span></p>
-                        </div>
-                    </div>
-                    
-                    <div id="fileInfo" class="d-none"></div>
-                    
-                    <div id="progressBar" class="progress mt-4 d-none">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                    </div>
-                    
-                    <div class="d-grid mt-4">
-                        <button type="submit" id="uploadBtn" class="btn btn-primary" disabled>
-                            <i class="fas fa-upload me-2"></i>Upload & Continue
-                        </button>
-                    </div>
-                </form>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Code Obfuscation
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Variable Renaming
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Junk Code Insertion
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Chunk & Encrypt
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Dynamic Loader Generator
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        License Protection
+                    </li>
+                </ul>
             </div>
         </div>
         
-        <div class="card">
+        <div class="card mt-4">
             <div class="card-header">
-                <i class="fas fa-question-circle me-2"></i>Need Help?
+                <h5>Supported File Types</h5>
             </div>
             <div class="card-body">
-                <p class="mb-3">Our tool supports PHP files with the following characteristics:</p>
-                <ul class="mb-3">
-                    <li>Valid PHP syntax (PHP 7.x and 8.x compatible)</li>
-                    <li>Files up to 10MB in size</li>
-                    <li>Both procedural and object-oriented code</li>
-                </ul>
-                <p>For larger files or special requirements, consider splitting your code into multiple files before obfuscation.</p>
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-file-code text-primary me-3" style="font-size: 2rem;"></i>
+                    <div>
+                        <h6 class="mb-0">.PHP Files</h6>
+                        <p class="mb-0 small">PHP 5.6 and above</p>
+                    </div>
+                </div>
+                <p class="alert alert-warning small mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Make sure your PHP file is syntactically correct before uploading.
+                </p>
             </div>
         </div>
     </div>

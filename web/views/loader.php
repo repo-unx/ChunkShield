@@ -1,187 +1,185 @@
+<div class="section-header mb-4">
+    <h2>Generate Loader</h2>
+    <p class="">Create a polymorphic loader script that will decrypt and execute your protected code.</p>
+</div>
+
 <?php
-// Ensure we have chunks info
+// Check if chunks are created
 if (!isset($_SESSION['chunks_info'])) {
-    $_SESSION['error'] = 'No chunks found. Please create chunks first.';
-    header('Location: index.php?tab=chunk');
+    echo '<div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            No chunks available. Please <a href="index.php?tab=chunk">create chunks</a> first.
+          </div>';
     exit;
 }
 
-// Get chunks info and encryption key
-$chunksInfo = $_SESSION['chunks_info'];
-$encryptionKey = $_SESSION['encryption_key'];
+// Display file info
+$filename = $_SESSION['original_filename'] ?? 'unknown.php';
+$chunk_count = count($_SESSION['chunks_info']['chunks'] ?? []);
 ?>
 
-<h2 class="mb-4"><i class="fas fa-file-code me-2"></i>Generate Loader</h2>
-
 <div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-puzzle-piece me-2"></i>Chunks Information
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Loader Generator Settings</h5>
+                <span class="badge bg-info">
+                    <i class="fas fa-puzzle-piece me-1"></i> <?php echo $chunk_count; ?> Chunks Created
+                </span>
             </div>
             <div class="card-body">
-                <p><strong>Number of Chunks:</strong> <?= count($chunksInfo['chunks']) ?></p>
-                <p><strong>Map File:</strong> <?= htmlspecialchars($chunksInfo['mapFile']) ?></p>
-                
-                <div class="accordion" id="chunksAccordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="chunksHeading">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#chunksCollapse" aria-expanded="false" aria-controls="chunksCollapse">
-                                View Chunks Details
-                            </button>
-                        </h2>
-                        <div id="chunksCollapse" class="accordion-collapse collapse" aria-labelledby="chunksHeading" data-bs-parent="#chunksAccordion">
-                            <div class="accordion-body">
-                                <ul class="list-group">
-                                    <?php foreach ($chunksInfo['chunks'] as $index => $chunk): ?>
-                                    <li class="list-group-item">
-                                        <strong>Chunk <?= $index + 1 ?>:</strong> <?= basename($chunk['file']) ?><br>
-                                        <small class="text-muted">Size: <?= round(filesize($chunk['file']) / 1024, 2) ?> KB</small>
-                                    </li>
-                                    <?php endforeach; ?>
-                                </ul>
+                <form method="post" action="index.php">
+                    <input type="hidden" name="action" value="loader">
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Loader Options</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="add_junk_eval" id="add_junk_eval" checked>
+                                        <label class="form-check-label" for="add_junk_eval">
+                                            Add Junk Eval Blocks
+                                            <small class="d-block ">Insert random eval() code to confuse decompilers</small>
+                                        </label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="junk_count" class="form-label">Junk Eval Count</label>
+                                        <input type="number" class="form-control" id="junk_count" name="junk_count" value="5" min="1" max="20">
+                                        <small class="">Number of junk eval blocks to insert</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5 class="mb-0">License Settings</h5>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableLicense" name="enable_license" checked>
+                                        <label class="form-check-label" for="enableLicense">Enable License Protection</label>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="add_fingerprinting" id="add_fingerprinting" checked>
+                                        <label class="form-check-label" for="add_fingerprinting">
+                                            Add Environment Fingerprinting
+                                            <small class="d-block ">Check domain, IP, and path at runtime</small>
+                                        </label>
+                                    </div>
+
+                                    <div class="alert alert-warning p-2 small">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Fingerprinting will be set in the License step. You can enable/disable it here.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-cogs me-2"></i>Loader Options
-            </div>
-            <div class="card-body">
-                <form action="index.php" method="post">
-                    <input type="hidden" name="action" value="generate_loader">
-                    
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="license_check" name="license_check">
-                        <label class="form-check-label" for="license_check">
-                            <i class="fas fa-id-card me-2 text-primary"></i>Add License Verification
-                        </label>
-                        <small class="form-text text-muted d-block">
-                            Adds code to verify a license file before loading the chunks.
-                        </small>
-                    </div>
-                    
-                    <hr class="my-3">
-                    <div class="security-options-section">
-                        <h5 class="mb-3"><i class="fas fa-shield-alt me-2 text-danger"></i>Advanced Protection</h5>
-                        
-                        <div class="junk-code-option mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="anti_logger" name="anti_logger">
-                                <label class="form-check-label" for="anti_logger">
-                                    <i class="fas fa-eye-slash me-2 text-warning"></i><strong>Anti-Logger Protection</strong>
-                                </label>
-                                <small class="form-text text-muted d-block mt-1">
-                                    Prevents logging of sensitive data and detects runtime logging attempts.
-                                    This helps protect your code against information leakage and debug probing.
-                                </small>
+
+                    <div class="mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Loader Output</h6>
                             </div>
-                        </div>
-                        
-                        <div class="junk-code-option mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="anti_debugger" name="anti_debugger">
-                                <label class="form-check-label" for="anti_debugger">
-                                    <i class="fas fa-bug-slash me-2 text-danger"></i><strong>Anti-Debugger Protection</strong>
-                                </label>
-                                <small class="form-text text-muted d-block mt-1">
-                                    Adds code to detect and prevent debugging and analysis tools.
-                                    Monitors execution timing and prevents step-by-step code analysis.
-                                </small>
-                            </div>
-                        </div>
-                        <div class="junk-code-option mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="junk_code" name="junk_code" checked>
-                                <label class="form-check-label" for="junk_code">
-                                    <i class="fas fa-random me-2 text-success"></i><strong>Junk Code Injection</strong>
-                                </label>
-                                <small class="form-text text-muted d-block mt-1">
-                                    Adds decoy functions and misleading code to make reverse-engineering more difficult.
-                                    This creates fake cryptographic operations and code paths to confuse analysis tools.
-                                </small>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="loader_name" class="form-label">Loader Filename</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-file-code"></i></span>
+                                        <input type="text" class="form-control" id="loader_name" name="loader_name" value="loader.php">
+                                    </div>
+                                    <small class="">Name of the generated loader file</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <hr class="my-3">
-                    <div class="fingerprinting-section">
-                        <h5 class="mb-3"><i class="fas fa-fingerprint me-2 fingerprinting-icon"></i>Runtime Fingerprinting</h5>
-                        
-                        <div class="fingerprinting-item mb-3">
-                            <label for="allowed_domains" class="form-label">
-                                <i class="fas fa-globe me-2 text-primary"></i>Allowed Domains
-                            </label>
-                            <input type="text" class="form-control" id="allowed_domains" name="allowed_domains" placeholder="example.com, *.subdomain.com">
-                            <small class="form-text text-muted">
-                                Comma-separated domains where the code is allowed to run. Use * as wildcard for subdomains.
-                            </small>
-                        </div>
-                        
-                        <div class="fingerprinting-item mb-3">
-                            <label for="allowed_ips" class="form-label">
-                                <i class="fas fa-network-wired me-2 text-primary"></i>Allowed IP Addresses
-                            </label>
-                            <input type="text" class="form-control" id="allowed_ips" name="allowed_ips" placeholder="192.168.1.1, 10.0.0.1, 127.0.0.1">
-                            <small class="form-text text-muted">
-                                Comma-separated IP addresses where the code is allowed to run. Add 127.0.0.1 for local testing.
-                            </small>
-                        </div>
-                        
-                        <div class="fingerprinting-item mb-3">
-                            <label for="allowed_paths" class="form-label">
-                                <i class="fas fa-folder me-2 text-primary"></i>Allowed Installation Paths
-                            </label>
-                            <input type="text" class="form-control" id="allowed_paths" name="allowed_paths" placeholder="/var/www, /home/user/public_html">
-                            <small class="form-text text-muted">
-                                Comma-separated paths where the code is allowed to run. Use phpinfo() to find your server path.
-                            </small>
-                        </div>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Runtime fingerprinting adds environment validation to prevent unauthorized use. Clear fields to disable specific validations.
-                        </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        The loader is a standalone PHP file that will fetch, decrypt, and execute your chunked code. Each time you generate a loader, it will have a unique structure to prevent signature-based detection.
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="encryption_key_display" class="form-label">
-                            <i class="fas fa-key me-2 text-primary"></i>Encryption Key (for reference)
-                        </label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="encryption_key_display" value="<?= htmlspecialchars($encryptionKey) ?>" readonly>
-                            <button class="btn btn-outline-secondary btn-copy" type="button" data-target="encryption_key_display">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                        <small class="form-text text-muted">
-                            This key will be embedded in the loader to decrypt chunks at runtime.
-                        </small>
-                    </div>
-                    
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Warning: The loader will include the encryption key. 
-                        If you need higher security, consider implementing a separate key delivery mechanism.
-                    </div>
-                    
-                    <div id="progressBar" class="progress mt-4 d-none">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                    </div>
-                    
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="index.php?tab=chunk" class="btn btn-secondary me-md-2">
-                            <i class="fas fa-arrow-left me-2"></i>Back
+
+                    <div class="d-flex justify-content-between">
+                        <a href="index.php?tab=chunk" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Chunking
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-file-code me-2"></i>Generate Loader & Continue
+                            <i class="fas fa-file-code me-2"></i> Generate Loader & Continue
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Loader Structure</h5>
+            </div>
+            <div class="card-body">
+                <div class="loader-diagram mb-4">
+                        <div class="code-diagram p-3 rounded" style="background-color: #2c3e50; color: #ecf0f1; font-family: monospace; font-size: 0.8rem; max-height: 400px; overflow: auto;">
+<span style="color: #9b59b6;">&lt;?php</span>
+<span style="color: #95a5a6;">/* Loader Header */</span>
+
+<span style="color: #3498db;">// Random junk eval blocks</span>
+<span style="color: #e74c3c;">eval</span>(<span style="color: #f1c40f;">"&#36;x=rand(1,100);"</span>);
+
+<span style="color: #3498db;">// Fingerprinting code</span>
+<span style="color: #2ecc71;">if</span>(<span style="color: #e74c3c;">&#36;_SERVER</span>[<span style="color: #f1c40f;">'HTTP_HOST'</span>]!==<span style="color: #f1c40f;">'example.com'</span>){
+    <span style="color: #e74c3c;">die</span>(<span style="color: #f1c40f;">'Invalid domain'</span>);
+}
+
+<span style="color: #3498db;">// Decrypt function</span>
+<span style="color: #2ecc71;">function</span> <span style="color: #3498db;">decrypt_aVzt9</span>(<span style="color: #e74c3c;">&#36;data</span>) {
+    <span style="color: #3498db;">// Decryption logic</span>
+}
+
+<span style="color: #3498db;">// Load chunks</span>
+<span style="color: #e74c3c;">&#36;chunks</span> = [
+    [<span style="color: #f1c40f;">'id'</span> => <span style="color: #f1c40f;">'abc123'</span>, ...],
+    [<span style="color: #f1c40f;">'id'</span> => <span style="color: #f1c40f;">'def456'</span>, ...],
+];
+
+<span style="color: #3498db;">// Process chunks</span>
+<span style="color: #2ecc71;">foreach</span>(<span style="color: #e74c3c;">&#36;chunks</span> <span style="color: #2ecc71;">as</span> <span style="color: #e74c3c;">&#36;chunk</span>) {
+    <span style="color: #3498db;">// Load and decrypt...</span>
+}
+
+<span style="color: #3498db;">// Execute code</span>
+<span style="color: #e74c3c;">eval</span>(<span style="color: #e74c3c;">&#36;decrypted_code</span>);
+<span style="color: #9b59b6;">?&gt;</span>
+                    </div>
+                </div>
+
+                <div class="loader-features mt-3">
+                    <h6>Polymorphic Loader Features</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-random text-success me-2"></i>
+                            <small>Each loader is uniquely generated</small>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-shield-alt text-success me-2"></i>
+                            <small>Runtime environment validation</small>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-puzzle-piece text-success me-2"></i>
+                            <small>Chunk integrity verification</small>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center py-2">
+                            <i class="fas fa-magic text-success me-2"></i>
+                            <small>Obfuscated decryption routines</small>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
