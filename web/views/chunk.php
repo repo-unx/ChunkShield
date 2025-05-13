@@ -90,6 +90,60 @@ $filesize_formatted = formatFileSize($filesize);
                     
                     <div class="mb-4">
                         <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">Advanced Security Features</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="add_anti_debugging" id="add_anti_debugging" checked>
+                                            <label class="form-check-label" for="add_anti_debugging">
+                                                <strong>Anti-Debugging Protection</strong>
+                                                <small class="d-block">Detects and blocks debugging attempts</small>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="enable_self_destruct" id="enable_self_destruct">
+                                            <label class="form-check-label" for="enable_self_destruct">
+                                                <strong>Self-Destruct Mechanism</strong>
+                                                <small class="d-block">Deletes files when tampering detected</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="encrypt_loader" id="encrypt_loader" checked>
+                                            <label class="form-check-label" for="encrypt_loader">
+                                                <strong>Encrypted Loader</strong>
+                                                <small class="d-block">Creates AES-256 encrypted loader</small>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="add_junk_eval" id="add_junk_eval" checked>
+                                            <label class="form-check-label" for="add_junk_eval">
+                                                <strong>Anti-Reverse Engineering</strong>
+                                                <small class="d-block">Adds junk code and obfuscation techniques</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <div class="alert alert-warning mb-0">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <small>These advanced features provide optimal protection but may increase file size. The self-destruct mechanism will permanently delete files when tampering is detected.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="card">
                             <div class="card-header">
                                 <h6 class="mb-0">Encryption Key</h6>
                             </div>

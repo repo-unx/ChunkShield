@@ -30,5 +30,83 @@
     
     <!-- Custom JavaScript -->
     <script src="assets/js/main.js"></script>
+    <?php if (defined('DEBUG_MODE') && DEBUG_MODE && isset($GLOBALS['page_start_time'])): ?>
+    <!-- Performance Debug Information -->
+    <div class="container mt-4">
+        <div class="card bg-light text-muted">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Performance Metrics</span>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#performanceInfo">
+                    Show Details
+                </button>
+            </div>
+            <div class="collapse" id="performanceInfo">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Page Generation</h6>
+                            <ul class="list-unstyled">
+                                <li>Load Time: <?php echo round((microtime(true) - $GLOBALS['page_start_time']) * 1000, 2); ?> ms</li>
+                                <li>Memory Usage: <?php echo round(memory_get_usage() / 1024 / 1024, 2); ?> MB</li>
+                                <li>Peak Memory: <?php echo round(memory_get_peak_usage() / 1024 / 1024, 2); ?> MB</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>PHP Info</h6>
+                            <ul class="list-unstyled">
+                                <li>PHP Version: <?php echo PHP_VERSION; ?></li>
+                                <li>Zend Version: <?php echo zend_version(); ?></li>
+                                <li>Server Software: <?php echo $_SERVER['SERVER_SOFTWARE'] ?? 'PHP Development Server'; ?></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <?php if (class_exists('CacheManager')): ?>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6>Cache Status</h6>
+                            <?php 
+                            $cache_manager = CacheManager::getInstance();
+                            $cache_status = $cache_manager->getStatus();
+                            ?>
+                            <table class="table table-sm table-bordered table-striped small">
+                                <tbody>
+                                    <tr>
+                                        <td>Cache Enabled</td>
+                                        <td><?php echo $cache_status['enabled'] ? 'Yes' : 'No'; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cache Hits</td>
+                                        <td><?php echo $cache_status['hits']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cache Misses</td>
+                                        <td><?php echo $cache_status['misses']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cache Hit Ratio</td>
+                                        <td><?php echo $cache_status['ratio']; ?>%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Using APCu</td>
+                                        <td><?php echo $cache_status['using_apcu'] ? 'Yes' : 'No'; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Using Memcached</td>
+                                        <td><?php echo $cache_status['using_memcached'] ? 'Yes' : 'No'; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Memory Usage</td>
+                                        <td><?php echo $cache_status['memory_usage']; ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 </body>
 </html>

@@ -35,7 +35,7 @@ $chunk_count = count($_SESSION['chunks_info']['chunks'] ?? []);
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h6 class="mb-0">Loader Options</h6>
+                                    <h6 class="mb-0">Obfuscation Options</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="form-check mb-3">
@@ -51,6 +51,14 @@ $chunk_count = count($_SESSION['chunks_info']['chunks'] ?? []);
                                         <input type="number" class="form-control" id="junk_count" name="junk_count" value="5" min="1" max="20">
                                         <small class="">Number of junk eval blocks to insert</small>
                                     </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="encrypt_loader" id="encrypt_loader" checked>
+                                        <label class="form-check-label" for="encrypt_loader">
+                                            Encrypt Loader
+                                            <small class="d-block ">Create self-decrypting encrypted loader (AES-256-CBC + base64 + gzip)</small>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -58,13 +66,14 @@ $chunk_count = count($_SESSION['chunks_info']['chunks'] ?? []);
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h5 class="mb-0">License Settings</h5>
-                                    <div class="form-check form-switch">
+                                    <h5 class="mb-0">Protection Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-check form-switch mb-3">
                                         <input class="form-check-input" type="checkbox" id="enableLicense" name="enable_license" checked>
                                         <label class="form-check-label" for="enableLicense">Enable License Protection</label>
                                     </div>
-                                </div>
-                                <div class="card-body">
+                                    
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" type="checkbox" name="add_fingerprinting" id="add_fingerprinting" checked>
                                         <label class="form-check-label" for="add_fingerprinting">
@@ -72,10 +81,21 @@ $chunk_count = count($_SESSION['chunks_info']['chunks'] ?? []);
                                             <small class="d-block ">Check domain, IP, and path at runtime</small>
                                         </label>
                                     </div>
-
-                                    <div class="alert alert-warning p-2 small">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        Fingerprinting will be set in the License step. You can enable/disable it here.
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="add_anti_debugging" id="add_anti_debugging" checked>
+                                        <label class="form-check-label" for="add_anti_debugging">
+                                            Anti-Debugging Protection
+                                            <small class="d-block ">Block execution if debugging detected (xdebug, var_dump, etc.)</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="enable_self_destruct" id="enable_self_destruct" checked>
+                                        <label class="form-check-label" for="enable_self_destruct">
+                                            Self-Destruct Mechanism
+                                            <small class="d-block ">Delete chunks & loader if tampering detected</small>
+                                        </label>
                                     </div>
                                 </div>
                             </div>

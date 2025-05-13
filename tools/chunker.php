@@ -6,10 +6,15 @@
  * encrypting those chunks, and managing chunk files.
  */
 
-// Include utilities if not already included
+// Include utilities and anti-reverse engineering tools
 if (!function_exists('generate_random_string')) {
     require_once __DIR__ . '/utils.php';
 }
+
+// Include anti-debugging, anti-cracking and obfuscation tools
+require_once __DIR__ . '/anti_debug.php';
+require_once __DIR__ . '/anti_crack.php';
+require_once __DIR__ . '/obfuscation.php';
 
 /**
  * Generates a random encryption key
@@ -336,12 +341,18 @@ function create_decrypt_function($key, $use_gzip = true, $use_base64 = true) {
  * @param array $options Loader options
  * @return array|bool Result with loader information or false on failure
  */
-function generate_loader($chunk_info, $output_dir, $license_info = [], $options = []) {
+function generate_loader_file($chunk_info, $output_dir, $license_info = [], $options = []) {
+    // Include anti-debugging functionality
+    require_once __DIR__ . '/anti_debug.php';
+    
     // Set default options
     $default_options = [
         'add_junk_eval' => true,
         'junk_count' => 5,
-        'add_fingerprinting' => true
+        'add_fingerprinting' => true,
+        'add_anti_debugging' => true,
+        'enable_self_destruct' => true,
+        'encrypt_loader' => true
     ];
     
     $options = array_merge($default_options, $options);
@@ -374,6 +385,87 @@ function generate_loader($chunk_info, $output_dir, $license_info = [], $options 
     
     // Start building the loader
     $loader = "<?php\n/* ChunkShield Protected File */\n\n";
+    
+    // Add anti-debugging code if enabled
+    if ($options['add_anti_debugging']) {
+        // Add direct anti-debugging check at the beginning
+        $var_debug_check = generate_random_var_name();
+        $var_debug_reason = generate_random_var_name();
+        $var_debug_log = generate_random_var_name();
+        $var_self_destruct = generate_random_var_name();
+        
+        $loader .= "// Anti-debugging detection\n";
+        $loader .= "\$ENABLE_SELF_DESTRUCT = " . ($options['enable_self_destruct'] ? 'true' : 'false') . ";\n";
+        $loader .= "\$" . $var_debug_reason . " = false;\n\n";
+        
+        // Check for Xdebug
+        $loader .= "// Check for debugging tools\n";
+        $loader .= "if (function_exists('xdebug_get_code_coverage') || extension_loaded('xdebug')) {\n";
+        $loader .= "    \$" . $var_debug_reason . " = 'Xdebug detected';\n";
+        $loader .= "}\n\n";
+        
+        // Check debug headers
+        $loader .= "// Check for debug headers\n";
+        $loader .= "foreach (['HTTP_X_DEBUG', 'HTTP_XDEBUG_SESSION', 'HTTP_X_XDEBUG_SESSION'] as \$" . $var_debug_check . ") {\n";
+        $loader .= "    if (isset(\$_SERVER[\$" . $var_debug_check . "])) {\n";
+        $loader .= "        \$" . $var_debug_reason . " = 'Debug header detected: ' . \$" . $var_debug_check . ";\n";
+        $loader .= "    }\n";
+        $loader .= "}\n\n";
+        
+        // Check debug environment variables
+        $loader .= "// Check for debug environment variables\n";
+        $loader .= "foreach (['XDEBUG_CONFIG', 'XDEBUG_SESSION', 'XDEBUG_TRIGGER', 'PHP_IDE_CONFIG'] as \$" . $var_debug_check . ") {\n";
+        $loader .= "    if (getenv(\$" . $var_debug_check . ") !== false) {\n";
+        $loader .= "        \$" . $var_debug_reason . " = 'Debug environment variable detected: ' . \$" . $var_debug_check . ";\n";
+        $loader .= "    }\n";
+        $loader .= "}\n\n";
+        
+        // Self-destruct function
+        if ($options['enable_self_destruct']) {
+            $loader .= "// Self-destruct function\n";
+            $loader .= "function " . $var_self_destruct . "(\$reason) {\n";
+            $loader .= "    \$log_file = __DIR__ . '/runtime.log';\n";
+            $loader .= "    \$timestamp = date('Y-m-d H:i:s');\n";
+            $loader .= "    \$ip = isset(\$_SERVER['REMOTE_ADDR']) ? \$_SERVER['REMOTE_ADDR'] : 'CLI';\n";
+            $loader .= "    \$entry = \"[\$timestamp] [SELF-DESTRUCT] Protected code self-destructing\\n\";\n";
+            $loader .= "    \$entry .= \"IP: \$ip\\n\";\n";
+            $loader .= "    \$entry .= \"Reason: \$reason\\n\";\n";
+            $loader .= "    @file_put_contents(\$log_file, \$entry, FILE_APPEND);\n\n";
+            $loader .= "    // Delete chunks\n";
+            $loader .= "    \$chunks_dir = __DIR__ . '/chunks';\n";
+            $loader .= "    if (is_dir(\$chunks_dir)) {\n";
+            $loader .= "        \$files = glob(\$chunks_dir . '/*');\n";
+            $loader .= "        foreach (\$files as \$file) {\n";
+            $loader .= "            if (is_file(\$file)) @unlink(\$file);\n";
+            $loader .= "        }\n";
+            $loader .= "        @rmdir(\$chunks_dir);\n";
+            $loader .= "    }\n\n";
+            $loader .= "    // Delete self (will happen after script finishes)\n";
+            $loader .= "    @register_shutdown_function(function() {\n";
+            $loader .= "        @unlink(__FILE__);\n";
+            $loader .= "    });\n";
+            $loader .= "}\n\n";
+            
+            // Execute self-destruct if debugging detected
+            $loader .= "// Execute self-destruct if debugging detected\n";
+            $loader .= "if (\$" . $var_debug_reason . " !== false && \$ENABLE_SELF_DESTRUCT) {\n";
+            $loader .= "    " . $var_self_destruct . "(\$" . $var_debug_reason . ");\n";
+            $loader .= "    die('Security violation detected. This attempt has been logged.');\n";
+            $loader .= "}\n\n";
+        } else {
+            // Just log and exit if debugging detected
+            $loader .= "// Handle debugging detection\n";
+            $loader .= "if (\$" . $var_debug_reason . " !== false) {\n";
+            $loader .= "    \$" . $var_debug_log . " = __DIR__ . '/runtime.log';\n";
+            $loader .= "    \$timestamp = date('Y-m-d H:i:s');\n";
+            $loader .= "    \$ip = isset(\$_SERVER['REMOTE_ADDR']) ? \$_SERVER['REMOTE_ADDR'] : 'CLI';\n";
+            $loader .= "    \$entry = \"[\$timestamp] [SECURITY ALERT] Debug attempt detected from \$ip\\n\";\n";
+            $loader .= "    \$entry .= \"Reason: \$" . $var_debug_reason . "\\n\";\n";
+            $loader .= "    @file_put_contents(\$" . $var_debug_log . ", \$entry, FILE_APPEND);\n";
+            $loader .= "    die('Security violation detected. This attempt has been logged.');\n";
+            $loader .= "}\n\n";
+        }
+    }
     
     // Add junk eval code at the beginning
     if ($options['add_junk_eval']) {
@@ -410,6 +502,9 @@ function generate_loader($chunk_info, $output_dir, $license_info = [], $options 
     // Sort chunks by index
     $loader .= "usort(\$" . $var_chunks . ", function(\$a, \$b) { return \$a['index'] - \$b['index']; });\n";
     
+    // Make variable initialization safer to avoid syntax errors
+    $loader = preg_replace('/\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(?=\s*=\s*[0-9]+)/', '\$$1', $loader);
+    
     // Add more junk eval
     if ($options['add_junk_eval']) {
         $loader .= generate_junk_eval() . "\n";
@@ -418,37 +513,187 @@ function generate_loader($chunk_info, $output_dir, $license_info = [], $options 
     // Initialize result variable
     $loader .= "\$" . $var_code . " = '';\n";
     
+    // Add honeypot license variables that crackers might try to tamper with
+    $var_lic_key = generate_random_var_name();
+    $var_valid_status = generate_random_var_name();
+    $var_license_check = generate_random_var_name();
+    
+    // Create a fake license structure that looks like it controls access but doesn't actually do anything
+    $loader .= "// License verification (appears important but is a honeypot)\n";
+    $loader .= "\${$var_lic_key} = '" . bin2hex(random_bytes(16)) . "';\n";
+    $loader .= "\${$var_valid_status} = false; // Appears to block execution if tampered with\n\n";
+    
+    // Add fake check that appears to verify the license but is never actually called
+    $loader .= "// License check function (honeypot for crackers)\n";
+    $loader .= "function {$var_license_check}() {\n";
+    $loader .= "    global \${$var_lic_key}, \${$var_valid_status};\n";
+    $loader .= "    \n";
+    $loader .= "    if (!\${$var_valid_status}) {\n";
+    $loader .= "        // This condition appears to block execution but is never checked\n";
+    $loader .= "        // Crackers will try to modify this variable\n";
+    $loader .= "        \$GLOBALS['_cs_tampered'] = true; // Flag for detection\n";
+    $loader .= "        return false;\n";
+    $loader .= "    }\n";
+    $loader .= "    return true;\n";
+    $loader .= "}\n\n";
+    
+    // Advanced integrity verification and self-destruct for chunks
+    $var_integrity_failures = generate_random_var_name();
+    $var_chunks_dir = generate_random_var_name();
+    $var_chunk_path = generate_random_var_name();
+    $var_runtime_log = generate_random_var_name();
+    $var_timestamp = generate_random_var_name();
+    
+    if ($options['add_anti_debugging']) {
+        $loader .= "\$" . $var_integrity_failures . " = 0; // Track integrity failures\n";
+        $loader .= "\$" . $var_chunks_dir . " = __DIR__ . '/chunks';\n";
+        $loader .= "\$" . $var_runtime_log . " = __DIR__ . '/runtime.log';\n";
+        $loader .= "\$" . $var_timestamp . " = date('Y-m-d H:i:s');\n\n";
+    }
+    
     // Load and decrypt each chunk
     $loader .= "foreach (\$" . $var_chunks . " as \$" . $var_i . " => \$" . $var_chunk . ") {\n";
-    $loader .= "    \$" . $var_data . " = file_get_contents(__DIR__ . '/chunks/' . \$" . $var_chunk . "['id'] . '.chunk');\n";
+    $loader .= "    \$" . $var_chunk_path . " = __DIR__ . '/chunks/' . \$" . $var_chunk . "['id'] . '.chunk';\n";
+    $loader .= "    if (!file_exists(\$" . $var_chunk_path . ")) {\n";
+    
+    if ($options['add_anti_debugging']) {
+        $loader .= "        @file_put_contents(\$" . $var_runtime_log . ", \"[\" . \$" . $var_timestamp . " . \"] ERROR: Missing chunk file: \" . \$" . $var_chunk . "['id'] . \".chunk\\n\", FILE_APPEND);\n";
+        $loader .= "        \$" . $var_integrity_failures . "++;\n";
+    }
+    
+    $loader .= "        die('Missing chunk file: ' . \$" . $var_chunk . "['id'] . '.chunk');\n";
+    $loader .= "    }\n";
+    $loader .= "    \$" . $var_data . " = file_get_contents(\$" . $var_chunk_path . ");\n";
     $loader .= "    \$" . $var_result . " = " . $decrypt_function_name . "(\$" . $var_data . ");\n";
     
-    // Hash verification
+    // Enhanced hash verification with anti-tampering
     $loader .= "    if (hash_hmac('sha256', \$" . $var_result . ", '" . $chunk_info['key'] . "') !== \$" . $var_chunk . "['hash']) {\n";
-    $loader .= "        die('Integrity check failed for chunk ' . \$" . $var_i . ");\n";
+    
+    if ($options['add_anti_debugging']) {
+        $loader .= "        @file_put_contents(\$" . $var_runtime_log . ", \"[\" . \$" . $var_timestamp . " . \"] SECURITY ALERT: Integrity check failed for chunk \" . \$" . $var_i . " . \"\\n\", FILE_APPEND);\n";
+        $loader .= "        \$" . $var_integrity_failures . "++;\n";
+        
+        if ($options['enable_self_destruct']) {
+            $loader .= "        // Self-destruct triggered on integrity failure\n";
+            $loader .= "        if (is_dir(\$" . $var_chunks_dir . ")) {\n";
+            $loader .= "            \$files = glob(\$" . $var_chunks_dir . ".'/*');\n";
+            $loader .= "            foreach (\$files as \$file) { if (is_file(\$file)) @unlink(\$file); }\n";
+            $loader .= "            @rmdir(\$" . $var_chunks_dir . ");\n";
+            $loader .= "        }\n";
+            $loader .= "        // Delete self\n";
+            $loader .= "        @unlink(__FILE__);\n";
+        }
+    }
+    
+    $loader .= "        die('Integrity check failed for chunk ' . \$" . $var_i . " . '. Tampered or corrupted code detected.');\n";
     $loader .= "    }\n";
     
     // Add chunk to the code
     $loader .= "    \$" . $var_code . " .= \$" . $var_result . ";\n";
     $loader .= "}\n\n";
     
+    // Add summary check
+    if ($options['add_anti_debugging']) {
+        $loader .= "// Verification summary\n";
+        $loader .= "if (\$" . $var_integrity_failures . " > 0) {\n";
+        $loader .= "    @file_put_contents(\$" . $var_runtime_log . ", \"[\" . \$" . $var_timestamp . " . \"] FATAL: \" . \$" . $var_integrity_failures . " . \" integrity failures detected. Execution terminated.\\n\", FILE_APPEND);\n";
+        $loader .= "    die('Multiple integrity failures detected. Execution terminated.');\n";
+        $loader .= "}\n\n";
+    }
+    
     // Add final junk eval
     if ($options['add_junk_eval']) {
         $loader .= generate_junk_eval() . "\n";
     }
     
+    // Enhanced security: Log execution in runtime.log
+    if ($options['add_anti_debugging']) {
+        $var_runtime_log = generate_random_var_name();
+        $var_timestamp = generate_random_var_name();
+        $var_ip = generate_random_var_name();
+        
+        $loader .= "// Log execution for security audit\n";
+        $loader .= "\$" . $var_runtime_log . " = __DIR__ . '/runtime.log';\n";
+        $loader .= "\$" . $var_timestamp . " = date('Y-m-d H:i:s');\n";
+        $loader .= "\$" . $var_ip . " = isset(\$_SERVER['REMOTE_ADDR']) ? \$_SERVER['REMOTE_ADDR'] : 'CLI';\n";
+        $loader .= "@file_put_contents(\$" . $var_runtime_log . ", \"[\" . \$" . $var_timestamp . " . \"] Code executed from \" . \$" . $var_ip . " . \"\\n\", FILE_APPEND);\n\n";
+    }
+    
     // Check content type and handle accordingly instead of direct eval
-    $loader .= "// Check if the decrypted content is valid PHP code\n";
-    $loader .= "if (substr(trim(\$" . $var_code . "), 0, 5) === '<?php' || substr(trim(\$" . $var_code . "), 0, 2) === '<?') {\n";
-    $loader .= "    // It's PHP code, evaluate it after removing PHP tags\n";
-    $loader .= "    eval(preg_replace('/^<\\?php|\?>$/i', '', \$" . $var_code . "));\n";
+    $loader .= "// Check if the decrypted content is valid PHP code and prepare it for execution\n";
+    $loader .= "// First do thorough check for PHP tags with whitespace handling\n";
+    $loader .= "\$" . $var_code . "_trimmed = trim(\$" . $var_code . ");\n";
+    $loader .= "if (preg_match('/^<\\?(?:php)?\\s/i', \$" . $var_code . "_trimmed) || substr(\$" . $var_code . "_trimmed, 0, 2) === '<?') {\n";
+    $loader .= "    // It's PHP code, evaluate it after carefully removing PHP tags\n";
+    
+    // Add additional safety check before eval
+    if ($options['add_anti_debugging']) {
+        $var_cleaned_code = generate_random_var_name();
+        $loader .= "    \$" . $var_cleaned_code . " = preg_replace('/^\\s*<\\?(?:php)?\\s+|\\s*\\?>\\s*$/i', '', \$" . $var_code . ");\n";
+        $loader .= "    \n";
+        $loader .= "    // Final safety check before execution\n";
+        $loader .= "    if (strpos(\$" . $var_cleaned_code . ", 'system(') !== false || \n";
+        $loader .= "        strpos(\$" . $var_cleaned_code . ", 'passthru(') !== false || \n";
+        $loader .= "        strpos(\$" . $var_cleaned_code . ", 'shell_exec(') !== false) {\n";
+        $loader .= "        // Potential dangerous code detected\n";
+        $loader .= "        @file_put_contents(\$" . $var_runtime_log . ", \"[\" . \$" . $var_timestamp . " . \"] SECURITY ALERT: Dangerous functions detected in code. Execution blocked.\\n\", FILE_APPEND);\n";
+        
+        // Self-destruct if enabled
+        if ($options['enable_self_destruct']) {
+            $loader .= "        // Self-destruct triggered\n";
+            $loader .= "        \$chunks_dir = __DIR__ . '/chunks';\n";
+            $loader .= "        if (is_dir(\$chunks_dir)) {\n";
+            $loader .= "            \$files = glob(\$chunks_dir . '/*');\n";
+            $loader .= "            foreach (\$files as \$file) { if (is_file(\$file)) @unlink(\$file); }\n";
+            $loader .= "            @rmdir(\$chunks_dir);\n";
+            $loader .= "        }\n";
+            $loader .= "        // Delete self\n";
+            $loader .= "        @unlink(__FILE__);\n";
+        }
+        
+        $loader .= "        die('Security violation: Execution terminated');\n";
+        $loader .= "    }\n";
+        $loader .= "    eval(\$" . $var_cleaned_code . ");\n";
+    } else {
+        $loader .= "    eval(preg_replace('/^\\s*<\\?(?:php)?\\s+|\\s*\\?>\\s*$/i', '', \$" . $var_code . "));\n";
+    }
+    
     $loader .= "} else {\n";
     $loader .= "    // If it's not PHP code, output it as HTML content\n";
     $loader .= "    echo \$" . $var_code . ";\n";
     $loader .= "}\n";
     
-    // Add closing PHP tag
-    $loader .= "?>";
+    // Add a final anti-tampering trap before the closing tag
+    $loader .= "// Anti-reverse engineering trap (obfuscated to look like more code follows)\n";
+    $loader .= "\$_cs_f = function(\$d, \$k) { \n";
+    $loader .= "        \$r=''; \n";
+    $loader .= "        for(\$i=0; \$i<strlen(\$d); \$i++) {\n";
+    $loader .= "            \$r .= chr(ord(\$d[\$i])^ord(\$k[\$i%strlen(\$k)])); \n";
+    $loader .= "        }\n";
+    $loader .= "        return \$r; \n";
+    $loader .= "    };\n";
+    $loader .= "// The following appears to be encrypted important data but is actually a red herring\n";
+    $loader .= "\$_cs_d='" . base64_encode(random_bytes(32)) . "';\n";
+    $loader .= "\$_cs_k='" . bin2hex(random_bytes(8)) . "';\n";
+    $loader .= "// This function looks like it does something critical\n";
+    $loader .= "function _cs_validate_execution() { \n";
+    $loader .= "    global \$_cs_d, \$_cs_k, \$_cs_f; \n";
+    $loader .= "    if (!isset(\$_cs_f) || !is_callable(\$_cs_f)) { \n";
+    $loader .= "        return false; \n";
+    $loader .= "    } \n";
+    $loader .= "    \$x = \$_cs_f(base64_decode(\$_cs_d), \$_cs_k); \n";
+    $loader .= "    return strlen(\$x) > 0; \n";
+    $loader .= "}\n";
+    
+    // Add some HTML comments that look like they contain important data
+    $loader .= "// HTML comments to mislead reverse engineers\n";
+    $loader .= "?>\n";
+    $loader .= "<!-- \n";
+    $loader .= "    LICENSE_INFO=" . bin2hex(random_bytes(16)) . "\n";
+    $loader .= "    VERSION=2.5.3\n";
+    $loader .= "    EXPIRY_CHECK=base64_decode('" . base64_encode("License valid until " . date('Y-m-d', strtotime('+1 year'))) . "')\n";
+    $loader .= "    ACTIVATION_STATUS=1\n";
+    $loader .= "-->";
     
     // Write loader to file
     $output_file = $output_dir . '/loader.php';
@@ -457,11 +702,188 @@ function generate_loader($chunk_info, $output_dir, $license_info = [], $options 
         return false;
     }
     
+    // Validate the loader for syntax errors 
+    if (file_exists(__DIR__ . '/loader_validator.php')) {
+        require_once __DIR__ . '/loader_validator.php';
+        
+        $validation_result = validate_loader($output_file);
+        if (!$validation_result['valid']) {
+            log_message("WARNING: Generated loader has potential issues:", 'warning');
+            foreach ($validation_result['errors'] as $error) {
+                log_message("  - " . $error, 'warning');
+            }
+            
+            // We still return true as the loader was created, 
+            // but errors are logged for the developer
+        }
+    }
+    
+    // Apply anti-reverse engineering obfuscation if enabled
+    if ($options['add_junk_eval']) {
+        log_message("Applying anti-reverse engineering protection to loader", 'info');
+        $loader = obfuscate_loader($loader, true, true, $options['add_anti_debugging']);
+    }
+    
+    // Create encrypted loader if enabled
+    $encrypted_loader_file = null;
+    if ($options['encrypt_loader']) {
+        // Generate a unique encryption key for the loader
+        $loader_key = generate_encryption_key();
+        
+        // Create the encrypted loader
+        $loader_result = create_encrypted_loader($loader, $output_dir, $loader_key);
+        
+        if ($loader_result !== false) {
+            $encrypted_loader_file = $loader_result['encrypted'];
+            log_message("Encrypted loader created successfully", 'info');
+            
+            // Additional protection for encrypted loader
+            $encrypted_loader_content = file_get_contents($encrypted_loader_file);
+            $obfuscated_encrypted_loader = obfuscate_loader($encrypted_loader_content, true, true, false);
+            file_put_contents($encrypted_loader_file, $obfuscated_encrypted_loader);
+            log_message("Applied additional obfuscation to encrypted loader", 'info');
+        } else {
+            log_message("Failed to create encrypted loader, using standard loader", 'warning');
+        }
+    }
+    
     return [
         'file' => $output_file,
+        'encrypted_file' => $encrypted_loader_file,
         'size' => strlen($loader),
         'decrypt_function' => $decrypt_function_name
     ];
+}
+
+/**
+ * Chunk a file into multiple encrypted pieces (advanced implementation)
+ *
+ * @param string $file_path Path to the file to chunk
+ * @param string $output_dir Directory to save chunks to
+ * @param array $options Chunking options
+ * @return array|bool Chunk information or false on error
+ */
+function chunk_file_advanced($file_path, $output_dir, $options = []) {
+    // Set default options
+    $default_options = [
+        'chunk_size' => 4096,
+        'min_chunks' => 2,
+        'max_chunks' => 10,
+        'use_gzip' => true,
+        'use_base64' => true,
+        'add_junk' => true
+    ];
+    
+    $options = array_merge($default_options, $options);
+    
+    // Ensure file exists
+    if (!file_exists($file_path)) {
+        if (function_exists('log_message')) {
+            log_message("File not found: $file_path", 'error');
+        }
+        return false;
+    }
+    
+    // Ensure output directory exists
+    if (!is_dir($output_dir)) {
+        if (!mkdir($output_dir, 0755, true)) {
+            if (function_exists('log_message')) {
+                log_message("Failed to create output directory: $output_dir", 'error');
+            }
+            return false;
+        }
+    }
+    
+    // Read file
+    $code = file_get_contents($file_path);
+    if ($code === false) {
+        if (function_exists('log_message')) {
+            log_message("Failed to read file: $file_path", 'error');
+        }
+        return false;
+    }
+    
+    // Generate a random key for encryption
+    $key = generate_random_key();
+    
+    // Determine chunk size and count
+    $file_size = strlen($code);
+    $chunk_size = $options['chunk_size'];
+    
+    // Adjust chunk size to ensure we have at least min_chunks
+    if ($file_size / $chunk_size < $options['min_chunks']) {
+        $chunk_size = floor($file_size / $options['min_chunks']);
+    }
+    
+    // Ensure we don't exceed max_chunks
+    if ($file_size / $chunk_size > $options['max_chunks']) {
+        $chunk_size = ceil($file_size / $options['max_chunks']);
+    }
+    
+    $chunks = [];
+    $chunk_count = ceil($file_size / $chunk_size);
+    
+    // Create a chunks directory if it doesn't exist
+    $chunks_dir = rtrim($output_dir, '/') . '/';
+    
+    // Create chunks
+    for ($i = 0; $i < $chunk_count; $i++) {
+        $chunk_id = generate_random_string(16);
+        $chunk_data = substr($code, $i * $chunk_size, $chunk_size);
+        
+        // Encrypt chunk
+        $encrypted = encrypt_data(
+            $chunk_data,
+            $key,
+            $options['use_gzip'],
+            $options['use_base64']
+        );
+        
+        if ($encrypted === false) {
+            if (function_exists('log_message')) {
+                log_message("Failed to encrypt chunk $i", 'error');
+            }
+            return false;
+        }
+        
+        // Write chunk to file
+        $chunk_file = $chunks_dir . $chunk_id . '.chunk';
+        if (file_put_contents($chunk_file, $encrypted['data']) === false) {
+            if (function_exists('log_message')) {
+                log_message("Failed to write chunk file: $chunk_file", 'error');
+            }
+            return false;
+        }
+        
+        // Add chunk info
+        $chunks[] = [
+            'id' => $chunk_id,
+            'index' => $i,
+            'hash' => isset($encrypted['hash']) ? $encrypted['hash'] : md5($chunk_data)
+        ];
+    }
+    
+    // Create chunk info
+    $chunk_info = [
+        'source' => basename($file_path),
+        'chunks' => $chunks,
+        'key' => $key,
+        'options' => $options,
+        'timestamp' => time(),
+        'directory' => $chunks_dir,
+        'version' => '1.0'
+    ];
+    
+    // Create metadata file
+    $metadata_file = create_chunk_metadata($chunk_info, $chunks_dir);
+    if ($metadata_file === false) {
+        if (function_exists('log_message')) {
+            log_message("Failed to create chunk metadata", 'error');
+        }
+        return false;
+    }
+    
+    return $chunk_info;
 }
 
 /**

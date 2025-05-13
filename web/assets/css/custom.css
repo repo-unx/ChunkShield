@@ -307,12 +307,14 @@ body {
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .main-content {
-        padding: 1.5rem;
+        padding: 1.25rem;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
     }
     
     .nav-tabs .nav-link {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
+        padding: 0.5rem 0.5rem;
+        font-size: 0.85rem;
     }
     
     .nav-tabs .nav-link i {
@@ -321,6 +323,50 @@ body {
     
     .nav-tabs .nav-link span {
         display: none;
+    }
+    
+    /* Improved form controls for mobile */
+    .form-control, .form-select, .btn {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* Stack buttons on mobile */
+    .d-flex.flex-row {
+        flex-direction: column !important;
+    }
+    
+    .d-flex.flex-row .btn {
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
+    
+    /* Adjust section spacing */
+    section {
+        margin-bottom: 1.5rem;
+    }
+    
+    h2, h3 {
+        font-size: 1.4rem;
+    }
+    
+    /* Make file upload area better for touch */
+    .file-upload-wrapper {
+        padding: 1.5rem;
+    }
+    
+    .file-upload-icon {
+        font-size: 2rem;
+    }
+    
+    /* Improve tab navigation for touch */
+    .nav-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        width: 100%;
     }
 }
 

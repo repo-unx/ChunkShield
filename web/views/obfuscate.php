@@ -91,10 +91,59 @@ $filesize_formatted = formatFileSize($filesize);
                         </div>
                     </div>
                     
+                    <!-- Semi-Compiler Section -->
+                    <div class="card mt-4 mb-4 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Semi-Compiler (Advanced Protection)</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="use_semi_compiler" id="use_semi_compiler">
+                                        <label class="form-check-label" for="use_semi_compiler">
+                                            <strong>Enable Semi-Compiler</strong>
+                                            <small class="d-block">Applies advanced code transformations and encryption</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="semi_compiler_level" class="form-label">Protection Level (1-5)</label>
+                                        <select class="form-select" name="semi_compiler_level" id="semi_compiler_level">
+                                            <option value="1">Level 1 - Basic (String Encoding)</option>
+                                            <option value="2">Level 2 - Intermediate (Binary Operations)</option>
+                                            <option value="3" selected>Level 3 - Advanced (Eval Protection)</option>
+                                            <option value="4">Level 4 - Expert (Reflection Techniques)</option>
+                                            <option value="5">Level 5 - Maximum (All Protections)</option>
+                                        </select>
+                                        <small class="d-block">Higher levels provide stronger protection but may impact performance</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Semi-Compiler:</strong> Transforms your PHP code into a form that's extremely difficult to reverse engineer. This goes beyond standard obfuscation by using encryption, binary operations, and dynamic execution techniques.
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
                         These settings will affect how well your code is protected. More aggressive obfuscation makes the code harder to understand but might impact performance.
                     </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="validate_syntax" id="validate_syntax" checked>
+                        <label class="form-check-label" for="validate_syntax">
+                            <strong>Validate Output Syntax</strong>
+                            <small class="d-block">Automatically check generated code for PHP syntax errors</small>
+                        </label>
+                    </div>
+                    
+                    <div id="validationResults" class="mt-3"></div>
                     
                     <div class="d-flex justify-content-between">
                         <a href="index.php?tab=upload" class="btn btn-outline-secondary">

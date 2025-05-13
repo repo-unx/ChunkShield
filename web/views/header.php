@@ -21,6 +21,10 @@
     
     <!-- Custom CSS -->
     <link href="assets/css/custom.css" rel="stylesheet">
+    
+    <!-- Custom JavaScript -->
+    <script src="assets/js/validation.js" defer></script>
+    <script src="assets/js/toast.js" defer></script>
 </head>
 <body>
     <!-- Header -->
@@ -62,11 +66,22 @@
         <div class="container">
             <!-- Flash Messages -->
             <?php
+            // Display flash messages with both traditional alerts and toast notifications
             if (isset($_SESSION['success'])) {
                 echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
                       <i class="fas fa-check-circle me-2"></i>' . $_SESSION['success'] . '
                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                       </div>';
+                
+                // Add JavaScript for toast notification
+                echo '<script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        if (window.toast) {
+                            window.toast.success("' . htmlspecialchars(str_replace('"', '\"', $_SESSION['success']), ENT_QUOTES) . '");
+                        }
+                    });
+                </script>';
+                
                 unset($_SESSION['success']);
             }
             
@@ -75,7 +90,55 @@
                       <i class="fas fa-exclamation-circle me-2"></i>' . $_SESSION['error'] . '
                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                       </div>';
+                
+                // Add JavaScript for toast notification
+                echo '<script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        if (window.toast) {
+                            window.toast.error("' . htmlspecialchars(str_replace('"', '\"', $_SESSION['error']), ENT_QUOTES) . '");
+                        }
+                    });
+                </script>';
+                
                 unset($_SESSION['error']);
+            }
+            
+            // Handle warning messages
+            if (isset($_SESSION['warning'])) {
+                echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                      <i class="fas fa-exclamation-triangle me-2"></i>' . $_SESSION['warning'] . '
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>';
+                
+                // Add JavaScript for toast notification
+                echo '<script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        if (window.toast) {
+                            window.toast.warning("' . htmlspecialchars(str_replace('"', '\"', $_SESSION['warning']), ENT_QUOTES) . '");
+                        }
+                    });
+                </script>';
+                
+                unset($_SESSION['warning']);
+            }
+            
+            // Handle info messages
+            if (isset($_SESSION['info'])) {
+                echo '<div class="alert alert-info alert-dismissible fade show" role="alert">
+                      <i class="fas fa-info-circle me-2"></i>' . $_SESSION['info'] . '
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>';
+                
+                // Add JavaScript for toast notification
+                echo '<script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        if (window.toast) {
+                            window.toast.info("' . htmlspecialchars(str_replace('"', '\"', $_SESSION['info']), ENT_QUOTES) . '");
+                        }
+                    });
+                </script>';
+                
+                unset($_SESSION['info']);
             }
             ?>
             
@@ -109,6 +172,16 @@
                 <li class="nav-item">
                     <a class="nav-link <?php echo $current_tab === 'output' ? 'active' : ''; ?> <?php echo !isset($_SESSION['loader_file']) ? 'disabled' : ''; ?>" href="index.php?tab=output">
                         <i class="fas fa-download"></i> <span>Output</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $current_tab === 'docs' ? 'active' : ''; ?>" href="index.php?tab=docs">
+                        <i class="fas fa-book"></i> <span>Dokumentasi</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $current_tab === 'help' ? 'active' : ''; ?>" href="index.php?tab=help">
+                        <i class="fas fa-question-circle"></i> <span>Bantuan</span>
                     </a>
                 </li>
             </ul>

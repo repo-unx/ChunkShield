@@ -4,18 +4,107 @@
  * Main entry point for the web interface
  */
 
-// Maximum error reporting for debugging
-ini_set('display_errors', 1); 
-error_reporting(E_ALL); 
+// Load configuration and performance optimizations
+require_once dirname(__DIR__) . '/config.php';
 
-// Initialize session
-session_start();
+// Track page load time
+$page_start_time = microtime(true);
 
-// Include necessary files and functions
-require_once dirname(__DIR__) . '/tools/utils.php';
-require_once dirname(__DIR__) . '/tools/obfuscator.php';
-require_once dirname(__DIR__) . '/tools/chunker.php';
-require_once dirname(__DIR__) . '/tools/license.php';
+// Start output buffering before session to avoid "headers already sent" errors
+ob_start();
+
+// Initialize session with performance settings
+session_start([
+    'cookie_lifetime' => 86400, // 24 hours
+    'gc_maxlifetime' => 86400,  // 24 hours
+    'use_strict_mode' => true,  // Increase security
+    'cookie_httponly' => true,  // Increase security
+    'cache_limiter' => 'private' // Better caching
+]);
+
+// Include necessary files and functions with optimized loading
+$cache_manager = CacheManager::getInstance();
+
+// Only use file cache if enabled in config
+$use_file_cache = defined('CACHE_ENABLED') ? CACHE_ENABLED : false;
+$file_cache_ttl = defined('FILE_CACHE_TTL') ? FILE_CACHE_TTL : 0;
+
+// Optimized file loading with optional caching
+function optimized_require($file_path, $cache_ttl = 0) {
+    global $cache_manager, $use_file_cache;
+    
+    if ($use_file_cache && $cache_ttl > 0) {
+        $cache_key = 'require_' . md5($file_path);
+        return $cache_manager->get($cache_key, function() use ($file_path) {
+            require_once $file_path;
+            return true;
+        }, $cache_ttl);
+    } else {
+        require_once $file_path;
+        return true;
+    }
+}
+
+// Include core files with optimized loading
+optimized_require(dirname(__DIR__) . '/tools/utils.php', $file_cache_ttl);
+optimized_require(dirname(__DIR__) . '/tools/obfuscator.php', $file_cache_ttl);
+optimized_require(dirname(__DIR__) . '/tools/chunker.php', $file_cache_ttl);
+optimized_require(dirname(__DIR__) . '/tools/license.php', $file_cache_ttl);
+
+// Set cache headers for static resources
+$current_uri = $_SERVER['REQUEST_URI'] ?? '';
+$is_static = false;
+
+// Check if request is for static content and handle it early before session starts
+if (strpos($current_uri, '.css') !== false ||
+    strpos($current_uri, '.js') !== false ||
+    strpos($current_uri, '.png') !== false ||
+    strpos($current_uri, '.jpg') !== false ||
+    strpos($current_uri, '.svg') !== false ||
+    strpos($current_uri, '.ico') !== false) {
+    
+    $is_static = true;
+    
+    // Set cache-control headers for static resources
+    $cache_time = 3600; // 1 hour
+    header('Cache-Control: public, max-age=' . $cache_time);
+    header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cache_time) . ' GMT');
+    
+    // Add ETag for caching validation
+    $file_path = dirname(__DIR__) . $current_uri;
+    if (file_exists($file_path)) {
+        $etag = md5_file($file_path);
+        header('ETag: "' . $etag . '"');
+        
+        // Check if browser has a valid cached version
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === '"' . $etag . '"') {
+            header('HTTP/1.1 304 Not Modified');
+            exit;
+        }
+        
+        // For static resources, we don't need to process the rest of the script
+        // This prevents session-related issues
+        $mime_type = 'application/octet-stream';
+        
+        if (strpos($current_uri, '.css') !== false) {
+            $mime_type = 'text/css';
+        } else if (strpos($current_uri, '.js') !== false) {
+            $mime_type = 'application/javascript';
+        } else if (strpos($current_uri, '.png') !== false) {
+            $mime_type = 'image/png';
+        } else if (strpos($current_uri, '.jpg') !== false || strpos($current_uri, '.jpeg') !== false) {
+            $mime_type = 'image/jpeg';
+        } else if (strpos($current_uri, '.svg') !== false) {
+            $mime_type = 'image/svg+xml';
+        } else if (strpos($current_uri, '.ico') !== false) {
+            $mime_type = 'image/x-icon';
+        }
+        
+        header('Content-Type: ' . $mime_type);
+        readfile($file_path);
+        exit;
+    }
+}
 
 // Create necessary directories if they don't exist
 $directories = [
@@ -25,9 +114,21 @@ $directories = [
     dirname(__DIR__) . '/logs'
 ];
 
-foreach ($directories as $dir) {
-    if (!file_exists($dir)) {
-        mkdir($dir, 0755, true);
+// Create directories using optimized method
+if (defined('USE_OPTIMIZED_FILE_OPS') && USE_OPTIMIZED_FILE_OPS) {
+    $opt_file_ops = get_optimized_file_ops();
+    foreach ($directories as $dir) {
+        if (!is_dir($dir)) {
+            // Let optimized file operations handle directory creation
+            $opt_file_ops->writeFile($dir . '/.gitkeep', '', false);
+        }
+    }
+} else {
+    // Fallback to standard directory creation
+    foreach ($directories as $dir) {
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
     }
 }
 
@@ -43,6 +144,57 @@ if (isset($_GET['action'])) {
             $_SESSION['success'] = 'All data has been cleared. You can start a new project.';
             $redirect = true;
             $redirect_url = 'index.php?tab=upload';
+            break;
+            
+        case 'validate_code':
+            // Validate generated code
+            header('Content-Type: application/json');
+            
+            // Check if we have any files to validate
+            if (!isset($_SESSION['loader_file']) || !file_exists($_SESSION['loader_file'])) {
+                echo json_encode([
+                    'passed' => false,
+                    'errors' => ['No loader file found to validate.'],
+                    'error_count' => 1,
+                    'warning_count' => 0,
+                    'warnings' => []
+                ]);
+                exit;
+            }
+            
+            // Include validator class if needed
+            if (!class_exists('CodeValidator')) {
+                require_once dirname(__DIR__) . '/tests/CodeValidator.php';
+            }
+            
+            $validator = new CodeValidator();
+            $loader_file = $_SESSION['loader_file'];
+            
+            // Validate the loader code
+            $isValid = $validator->validateFile($loader_file, CodeValidator::LEVEL_STRUCTURE);
+            $results = $validator->getResults();
+            
+            // Also validate encrypted loader if it exists
+            if (isset($_SESSION['loader_result']['encrypted_file']) && 
+                file_exists($_SESSION['loader_result']['encrypted_file'])) {
+                
+                $encrypted_file = $_SESSION['loader_result']['encrypted_file'];
+                $encValidator = new CodeValidator();
+                $encValidator->validateFile($encrypted_file, CodeValidator::LEVEL_SYNTAX);
+                $encResults = $encValidator->getResults();
+                
+                // Add encrypted loader validation results if failed
+                if (!$encValidator->isPassed()) {
+                    $results['errors'][] = "Encrypted loader validation failed: " . 
+                                          (isset($encResults['errors'][0]) ? $encResults['errors'][0] : "Unknown error");
+                    $results['error_count']++;
+                    $isValid = false;
+                }
+            }
+            
+            // Return validation results
+            echo json_encode($results);
+            exit;
             break;
     }
 }
@@ -143,20 +295,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 'rename_variables' => isset($_POST['rename_variables']),
                 'rename_functions' => isset($_POST['rename_variables']),  // Use same setting for functions
                 'insert_junk' => isset($_POST['insert_junk']),
-                'junk_density' => isset($_POST['junk_density']) ? intval($_POST['junk_density']) : 3
+                'junk_density' => isset($_POST['junk_density']) ? intval($_POST['junk_density']) : 3,
+                'use_semi_compiler' => isset($_POST['use_semi_compiler']),
+                'semi_compiler_level' => isset($_POST['semi_compiler_level']) ? intval($_POST['semi_compiler_level']) : 3,
+                'validate_syntax' => isset($_POST['validate_syntax'])
             ];
 
-            $result = obfuscate_code($code, $options);
-
-            if ($result !== false) {
+            // Tambahkan logging untuk melihat proses obfuscation
+            log_message("Memulai proses obfuscation dengan options: " . json_encode($options), "info");
+            
+            // Gunakan fungsi wrapper atau advanced
+            if (function_exists('obfuscate_code_wrapper')) {
+                log_message("Menggunakan fungsi obfuscate_code_wrapper", "info");
+                $result = obfuscate_code_wrapper($code, $options);
+            } elseif (function_exists('obfuscate_code_advanced')) {
+                log_message("Menggunakan fungsi obfuscate_code_advanced", "info");
+                $result = obfuscate_code_advanced($code, $options);
+            } else {
+                // Include necessary files
+                require_once(dirname(__DIR__) . '/tools/obfuscator.php');
+                require_once(dirname(__DIR__) . '/tools/wrappers.php');
+                
+                if (function_exists('obfuscate_code_advanced')) {
+                    log_message("Menggunakan fungsi obfuscate_code_advanced setelah include", "info");
+                    $result = obfuscate_code_advanced($code, $options);
+                } else {
+                    log_message("Tidak menemukan fungsi obfuscation", "error");
+                    $error = "Fungsi obfuscation tidak tersedia. Mohon periksa instalasi aplikasi.";
+                    redirect("index.php?tab=obfuscate&error=" . urlencode($error));
+                    exit;
+                }
+            }
+            
+            // Pastikan hasil obfuscation valid
+            if ($result !== false && is_array($result)) {
                 // Save obfuscated code to session and file
                 $_SESSION['obfuscated_file'] = $result['code'];
                 $_SESSION['obfuscation_metadata'] = $result['metadata'];
+                $_SESSION['obfuscation_options'] = $options; // Save options for later use
 
                 $obfuscated_file = dirname(__DIR__) . '/output/obfuscated/' . pathinfo($_SESSION['original_filename'], PATHINFO_FILENAME) . '_obfuscated.php';
-                file_put_contents($obfuscated_file, $result['code']);
+                // Use optimized file operations if available
+                if (defined('USE_OPTIMIZED_FILE_OPS') && USE_OPTIMIZED_FILE_OPS) {
+                    $opt_file_ops = get_optimized_file_ops();
+                    $opt_file_ops->writeFile($obfuscated_file, $result['code']);
+                } else {
+                    file_put_contents($obfuscated_file, $result['code']);
+                }
 
                 $_SESSION['success'] = 'Code obfuscated successfully.';
+                
+                // Add semi-compiler info to success message if used
+                if (isset($options['use_semi_compiler']) && $options['use_semi_compiler']) {
+                    $level = isset($options['semi_compiler_level']) ? (int)$options['semi_compiler_level'] : 3;
+                    $_SESSION['success'] .= ' Semi-compiler (level ' . $level . ') applied.';
+                }
                 header('Location: index.php?tab=chunk');
             } else {
                 $_SESSION['error'] = 'Obfuscation failed.';
@@ -184,7 +377,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 'chunk_size' => isset($_POST['chunk_size']) ? intval($_POST['chunk_size']) : 4096,
                 'min_chunks' => isset($_POST['min_chunks']) ? intval($_POST['min_chunks']) : 3,
                 'use_gzip' => isset($_POST['use_gzip']),
-                'use_base64' => isset($_POST['use_base64'])
+                'use_base64' => isset($_POST['use_base64']),
+                // Advanced security options
+                'add_anti_debugging' => isset($_POST['add_anti_debugging']),
+                'enable_self_destruct' => isset($_POST['enable_self_destruct']),
+                'encrypt_loader' => isset($_POST['encrypt_loader']),
+                'add_junk_eval' => isset($_POST['add_junk_eval']),
+                'junk_count' => 5 // Default junk code density
             ];
 
             $encryption_key = !empty($_POST['encryption_key']) ? $_POST['encryption_key'] : generate_encryption_key();
@@ -223,10 +422,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $chunks_dir = $_SESSION['chunks_dir'];
             $output_dir = dirname($chunks_dir);
 
+            // Get advanced security options from session if they were set during chunking
             $options = [
-                'add_junk_eval' => isset($_POST['add_junk_eval']),
+                'add_junk_eval' => isset($_SESSION['chunks_info']['options']['add_junk_eval']) ? 
+                    $_SESSION['chunks_info']['options']['add_junk_eval'] : isset($_POST['add_junk_eval']),
+                    
                 'junk_count' => isset($_POST['junk_count']) ? intval($_POST['junk_count']) : 5,
-                'add_fingerprinting' => isset($_POST['add_fingerprinting'])
+                
+                'add_fingerprinting' => isset($_POST['add_fingerprinting']),
+                
+                'add_anti_debugging' => isset($_SESSION['chunks_info']['options']['add_anti_debugging']) ? 
+                    $_SESSION['chunks_info']['options']['add_anti_debugging'] : isset($_POST['add_anti_debugging']),
+                    
+                'enable_self_destruct' => isset($_SESSION['chunks_info']['options']['enable_self_destruct']) ? 
+                    $_SESSION['chunks_info']['options']['enable_self_destruct'] : isset($_POST['enable_self_destruct']),
+                    
+                'encrypt_loader' => isset($_SESSION['chunks_info']['options']['encrypt_loader']) ? 
+                    $_SESSION['chunks_info']['options']['encrypt_loader'] : isset($_POST['encrypt_loader'])
             ];
 
             $loader_name = !empty($_POST['loader_name']) ? $_POST['loader_name'] : 'loader.php';
@@ -239,7 +451,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($loader_result !== false) {
                 $_SESSION['loader_file'] = $loader_file;
                 $_SESSION['loader_options'] = $options;
-                $_SESSION['success'] = 'Loader generated successfully.';
+                $_SESSION['loader_result'] = $loader_result;
+                
+                $success_message = 'Loader generated successfully.';
+                if (isset($loader_result['encrypted_file']) && !empty($loader_result['encrypted_file'])) {
+                    $success_message .= ' Encrypted loader created.';
+                }
+                
+                $_SESSION['success'] = $success_message;
                 header('Location: index.php?tab=license');
             } else {
                 $_SESSION['error'] = 'Failed to generate loader.';
@@ -375,8 +594,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 'junk_density' => isset($_POST['junk_density']) ? intval($_POST['junk_density']) : 3
             ];
 
-            $result = obfuscate_code($code, $options);
-            echo json_encode(['success' => true, 'preview' => $result['code']]);
+            // Gunakan fungsi wrapper atau advanced untuk preview
+            log_message("Preview obfuscation dengan options: " . json_encode($options), "info");
+            
+            if (function_exists('obfuscate_code_wrapper')) {
+                log_message("Preview menggunakan fungsi obfuscate_code_wrapper", "info");
+                $result = obfuscate_code_wrapper($code, $options);
+            } elseif (function_exists('obfuscate_code_advanced')) {
+                log_message("Preview menggunakan fungsi obfuscate_code_advanced", "info");
+                $result = obfuscate_code_advanced($code, $options);
+            } else {
+                // Include necessary files
+                require_once(dirname(__DIR__) . '/tools/obfuscator.php');
+                require_once(dirname(__DIR__) . '/tools/wrappers.php');
+                
+                if (function_exists('obfuscate_code_advanced')) {
+                    log_message("Preview menggunakan fungsi obfuscate_code_advanced setelah include", "info");
+                    $result = obfuscate_code_advanced($code, $options);
+                } else {
+                    log_message("Tidak menemukan fungsi obfuscation untuk preview", "error");
+                    echo json_encode(['success' => false, 'error' => 'Fungsi obfuscation tidak tersedia']);
+                    exit;
+                }
+            }
+            
+            if (is_array($result) && isset($result['code'])) {
+                echo json_encode(['success' => true, 'preview' => $result['code']]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Preview gagal: Format hasil tidak valid']);
+            }
             exit;
             break;
 

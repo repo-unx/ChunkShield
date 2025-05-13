@@ -108,9 +108,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link');
     
     navLinks.forEach(link => {
-        const linkSection = link.getAttribute('href').split('#')[1];
-        if (linkSection === currentSection) {
-            link.classList.add('active');
+        const href = link.getAttribute('href');
+        if (href && href.includes('#')) {
+            const linkSection = href.split('#')[1];
+            if (linkSection === currentSection) {
+                link.classList.add('active');
+            }
         }
     });
 });

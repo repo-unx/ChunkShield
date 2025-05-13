@@ -215,19 +215,29 @@ function insert_junk_code($code, $density = 3) {
 }
 
 /**
- * Main obfuscation function
+ * Main obfuscation function (advanced implementation)
+ * 
+ * This is the advanced obfuscator implementation. If you need the simple version,
+ * use the one from chunk_functions.php instead.
  */
-function obfuscate_code($code, $options = []) {
+function obfuscate_code_advanced($code, $options = []) {
     $default_options = [
         'remove_comments' => true,
         'remove_whitespace' => true,
         'rename_variables' => true,
         'rename_functions' => true,
         'insert_junk' => true,
-        'junk_density' => 3
+        'junk_density' => 3,
+        'use_semi_compiler' => false,
+        'semi_compiler_level' => 3
     ];
 
     $options = array_merge($default_options, $options);
+    
+    // Include semi-compiler if it's not already included
+    if ($options['use_semi_compiler'] && !function_exists('semi_compile_php')) {
+        require_once __DIR__ . '/semi_compiler.php';
+    }
 
     $metadata = [
         'original_size' => strlen($code),
@@ -266,12 +276,44 @@ function obfuscate_code($code, $options = []) {
     // Clean any existing PHP tags
     $php_code = preg_replace('/<\?(?:php)?|\?>/', '', $php_code);
     $php_code = trim($php_code);
-    $obfuscated_code = "<?php\n/* Obfuscated with ChunkShield */\n" . $php_code;
+    
+    // Apply semi-compilation if enabled
+    if ($options['use_semi_compiler']) {
+        log_message("Applying semi-compilation with level: " . $options['semi_compiler_level'], 'info');
+        
+        $semi_compile_options = [
+            'encode_strings' => true,
+            'encode_numbers' => true,
+            'encode_variables' => true,
+            'encode_functions' => true,
+            'use_reflection' => $options['semi_compiler_level'] >= 4,
+            'use_eval' => $options['semi_compiler_level'] >= 3,
+            'use_binary_operations' => $options['semi_compiler_level'] >= 2,
+            'complexity_level' => $options['semi_compiler_level']
+        ];
+        
+        $php_code = semi_compile($php_code, $options['semi_compiler_level']);
+        $metadata['semi_compiled'] = true;
+        $metadata['semi_compiler_level'] = $options['semi_compiler_level'];
+        $obfuscated_code = $php_code; // Semi-compiler already adds PHP tags
+    } else {
+        $obfuscated_code = "<?php\n/* Obfuscated with ChunkShield */\n" . $php_code;
+    }
+    
+    // Validate the obfuscated code for syntax errors
+    // Include validation function if not already included
+    if (!function_exists('validate_obfuscated_code')) {
+        require_once __DIR__ . '/validate_obfuscated_code.php';
+    }
+    validate_obfuscated_code($obfuscated_code);
 
     $metadata['obfuscated_size'] = strlen($obfuscated_code);
     $metadata['size_reduction'] = $metadata['original_size'] > 0 ? 
         round((1 - ($metadata['obfuscated_size'] / $metadata['original_size'])) * 100, 2) : 0;
 
+    // Add validation info to metadata
+    $metadata['validated'] = true;
+    
     return [
         'code' => $obfuscated_code,
         'metadata' => $metadata
@@ -281,7 +323,7 @@ function obfuscate_code($code, $options = []) {
 /**
  * Main obfuscation function that works with files
  */
-function obfuscate_php_file($input_file, $output_file = null, $options = []) {
+function obfuscate_php_file_advanced($input_file, $output_file = null, $options = []) {
     if (!file_exists($input_file)) {
         log_message("Input file not found: $input_file", 'error');
         return false;
@@ -294,7 +336,7 @@ function obfuscate_php_file($input_file, $output_file = null, $options = []) {
         return false;
     }
 
-    $result = obfuscate_code($code, $options);
+    $result = obfuscate_code_advanced($code, $options);
 
     if ($output_file !== null) {
         $write_result = file_put_contents($output_file, $result['code']);

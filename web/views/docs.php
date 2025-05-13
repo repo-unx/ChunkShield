@@ -1,615 +1,831 @@
-<div class="section-header mb-4">
-    <h2>Documentation</h2>
-    <p class="">Learn how to use ChunkShield to protect your PHP code.</p>
-</div>
-
-<div class="row">
-    <div class="col-lg-3">
-        <div class="card mb-4">
-            <div class="card-body">
-                <nav class="docs-nav" id="docs-nav">
-                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="overview-tab" data-bs-toggle="pill" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
-                        <a class="nav-link" id="obfuscation-tab" data-bs-toggle="pill" href="#obfuscation" role="tab" aria-controls="obfuscation" aria-selected="false">Obfuscation</a>
-                        <a class="nav-link" id="chunking-tab" data-bs-toggle="pill" href="#chunking" role="tab" aria-controls="chunking" aria-selected="false">Chunking</a>
-                        <a class="nav-link" id="loader-tab" data-bs-toggle="pill" href="#loader" role="tab" aria-controls="loader" aria-selected="false">Loader</a>
-                        <a class="nav-link" id="license-tab" data-bs-toggle="pill" href="#license" role="tab" aria-controls="license" aria-selected="false">License</a>
-                        <a class="nav-link" id="deployment-tab" data-bs-toggle="pill" href="#deployment" role="tab" aria-controls="deployment" aria-selected="false">Deployment</a>
-                        <a class="nav-link" id="faq-tab" data-bs-toggle="pill" href="#faq" role="tab" aria-controls="faq" aria-selected="false">FAQ</a>
-                    </div>
-                </nav>
-            </div>
-        </div>
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h2 class="card-title mb-0">
+            <i class="fas fa-book me-2"></i> Dokumentasi ChunkShield
+        </h2>
     </div>
-    
-    <div class="col-lg-9">
-        <div class="card">
-            <div class="card-body">
-                <div class="tab-content" id="docs-tab-content">
-                    <!-- Overview Section -->
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <div class="doc-section">
-                            <h3>ChunkShield: PHP Code Protection System</h3>
-                            <p>ChunkShield is a comprehensive PHP code protection system that combines multiple security techniques to protect your valuable PHP code from unauthorized access, analysis, and theft.</p>
-                            
-                            <h4 class="mt-4">Protection Layers</h4>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><i class="fas fa-code text-primary me-2"></i> Obfuscation</h5>
-                                            <p class="card-text">Transforms your readable PHP code into a complex, difficult-to-understand format while maintaining functionality.</p>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-group mb-4" id="docs-nav" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="intro-tab" data-bs-toggle="list" href="#intro" role="tab" aria-controls="intro">
+                        <i class="fas fa-info-circle me-2"></i> Pengenalan
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="getting-started-tab" data-bs-toggle="list" href="#getting-started" role="tab" aria-controls="getting-started">
+                        <i class="fas fa-play me-2"></i> Memulai
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="obfuscation-tab" data-bs-toggle="list" href="#obfuscation" role="tab" aria-controls="obfuscation">
+                        <i class="fas fa-mask me-2"></i> Obfuscation
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="chunking-tab" data-bs-toggle="list" href="#chunking" role="tab" aria-controls="chunking">
+                        <i class="fas fa-puzzle-piece me-2"></i> Chunking
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="loading-tab" data-bs-toggle="list" href="#loading" role="tab" aria-controls="loading">
+                        <i class="fas fa-file-code me-2"></i> Loader
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="advanced-security-tab" data-bs-toggle="list" href="#advanced-security" role="tab" aria-controls="advanced-security">
+                        <i class="fas fa-shield-alt me-2"></i> Keamanan Lanjutan
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="semi-compiler-tab" data-bs-toggle="list" href="#semi-compiler" role="tab" aria-controls="semi-compiler">
+                        <i class="fas fa-code me-2"></i> Semi-Compiler
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="replit-guide-tab" data-bs-toggle="list" href="#replit-guide" role="tab" aria-controls="replit-guide">
+                        <i class="fas fa-server me-2"></i> Panduan Replit
+                    </a>
+                    <a class="list-group-item list-group-item-action" id="troubleshooting-tab" data-bs-toggle="list" href="#troubleshooting" role="tab" aria-controls="troubleshooting">
+                        <i class="fas fa-wrench me-2"></i> Troubleshooting
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <!-- Introduction -->
+                    <div class="tab-pane fade show active" id="intro" role="tabpanel" aria-labelledby="intro-tab">
+                        <h3 class="mb-4">Pengenalan ke ChunkShield</h3>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> ChunkShield adalah sistem perlindungan kode PHP yang dirancang untuk melindungi kode sumber Anda dari pencurian, pembajakan, dan rekayasa balik.
+                        </div>
+                        <p>ChunkShield menggabungkan beberapa teknik perlindungan kode canggih untuk memberikan lapisan keamanan yang kuat untuk aplikasi PHP Anda:</p>
+                        <ul class="feature-list">
+                            <li><strong>Obfuscation:</strong> Mengubah kode menjadi format yang sulit dibaca manusia</li>
+                            <li><strong>Chunking:</strong> Memecah kode menjadi potongan terenkripsi yang terpisah</li>
+                            <li><strong>Loader Terenkripsi:</strong> Mekanisme pemuatan kode yang aman dengan pemeriksaan integritas</li>
+                            <li><strong>Anti-Debug:</strong> Mendeteksi dan mencegah upaya debug dan analisis</li>
+                            <li><strong>Anti-Tampering:</strong> Mencegah modifikasi kode tidak sah</li>
+                            <li><strong>Semi-Compiler:</strong> Konversi kode PHP ke format yang hampir seperti tercompile</li>
+                        </ul>
+                        <p>Dengan menggunakan ChunkShield, Anda dapat mendistribusikan aplikasi PHP Anda dengan percaya diri bahwa kode sumber Anda terlindungi dari ancaman yang mencoba mengakses logika bisnis Anda.</p>
+                    </div>
+                    
+                    <!-- Getting Started -->
+                    <div class="tab-pane fade" id="getting-started" role="tabpanel" aria-labelledby="getting-started-tab">
+                        <h3 class="mb-4">Memulai dengan ChunkShield</h3>
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i> ChunkShield sudah dikonfigurasi dan berjalan di Replit Anda!
+                        </div>
+                        <h4 class="mt-4">Langkah-langkah Dasar</h4>
+                        <p>Berikut adalah langkah-langkah dasar untuk menggunakan ChunkShield:</p>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <ol class="step-list">
+                                    <li>
+                                        <strong>Upload File:</strong> Unggah file PHP yang ingin Anda lindungi.
+                                        <div class="mt-2 mb-3">
+                                            <span class="badge bg-primary">Atau</span>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><i class="fas fa-puzzle-piece text-primary me-2"></i> Chunking</h5>
-                                            <p class="card-text">Splits your obfuscated code into multiple encrypted chunks, making it harder to recover the full source code.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><i class="fas fa-lock text-primary me-2"></i> Encryption</h5>
-                                            <p class="card-text">Secures each chunk with AES-256-CBC encryption, unreadable without the proper decryption key.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><i class="fas fa-file-code text-primary me-2"></i> Polymorphic Loader</h5>
-                                            <p class="card-text">Generates a unique loader script that decrypts and executes your protected code at runtime.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><i class="fas fa-key text-primary me-2"></i> License Protection</h5>
-                                            <p class="card-text">Adds runtime validation to ensure your code only runs in authorized environments.</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <strong>Paste Kode:</strong> Tempel kode PHP langsung ke editor.
+                                    </li>
+                                    <li>
+                                        <strong>Pilih Metode Perlindungan:</strong>
+                                        <ul>
+                                            <li><strong>Obfuscation:</strong> Untuk kode tunggal tanpa dependensi</li>
+                                            <li><strong>Chunking:</strong> Untuk perlindungan maksimum dengan potongan terenkripsi</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Konfigurasi Opsi:</strong> Sesuaikan pengaturan keamanan sesuai kebutuhan.</li>
+                                    <li><strong>Proses Kode:</strong> Klik tombol "Proses" untuk melindungi kode Anda.</li>
+                                    <li><strong>Unduh Hasil:</strong> Unduh kode yang telah dilindungi untuk digunakan di proyek Anda.</li>
+                                </ol>
                             </div>
-                            
-                            <h4 class="mt-4">How It Works</h4>
-                            <ol>
-                                <li>Upload your PHP file through the web interface</li>
-                                <li>Configure obfuscation options to hide your code logic</li>
-                                <li>Set up chunking and encryption parameters</li>
-                                <li>Generate a polymorphic loader that reassembles your code</li>
-                                <li>Create license restrictions if needed</li>
-                                <li>Download and deploy the protected package</li>
-                            </ol>
+                        </div>
+                        <h4>Format File yang Didukung</h4>
+                        <p>ChunkShield mendukung format file berikut:</p>
+                        <ul>
+                            <li>File PHP individual (.php)</li>
+                            <li>Script PHP tertentu dalam proyek</li>
+                            <li>Kode PHP yang ditempel langsung</li>
+                        </ul>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i> <strong>Catatan:</strong> Framework PHP yang kompleks mungkin memerlukan pendekatan perlindungan khusus. Hubungi pengembang untuk panduan lebih lanjut.
                         </div>
                     </div>
                     
-                    <!-- Obfuscation Section -->
+                    <!-- Obfuscation -->
                     <div class="tab-pane fade" id="obfuscation" role="tabpanel" aria-labelledby="obfuscation-tab">
-                        <div class="doc-section">
-                            <h3>Obfuscation</h3>
-                            <p>Obfuscation is the first layer of protection that makes your PHP code difficult to understand while preserving its functionality.</p>
-                            
-                            <h4 class="mt-4">Obfuscation Techniques</h4>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Technique</th>
-                                            <th>Description</th>
-                                            <th>Effect</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Comment Removal</td>
-                                            <td>Strips all comments from your code</td>
-                                            <td>Removes explanations and documentation</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Whitespace Removal</td>
-                                            <td>Eliminates unnecessary spaces, tabs, and line breaks</td>
-                                            <td>Makes code harder to read and format</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Variable Renaming</td>
-                                            <td>Replaces meaningful variable names with random strings</td>
-                                            <td>Hides the purpose and context of variables</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Function Renaming</td>
-                                            <td>Replaces function names with random identifiers</td>
-                                            <td>Obscures code structure and flow</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Junk Code Insertion</td>
-                                            <td>Adds meaningless code snippets throughout your code</td>
-                                            <td>Distracts analysts and breaks decompilers</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <h3 class="mb-4">Obfuscation Kode</h3>
+                        <p>Obfuscation adalah proses mengubah kode sumber menjadi versi yang setara secara fungsional tetapi sangat sulit dibaca dan dimengerti oleh manusia.</p>
+                        <h4 class="mt-4">Fitur Obfuscation</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <ul class="feature-list">
+                                    <li>
+                                        <strong>Penghapusan Komentar & Whitespace</strong>
+                                        <p class="text-muted small">Menghapus semua komentar dan whitespace yang tidak diperlukan untuk meminimalkan ukuran dan kejelasan.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Enkripsi String</strong>
+                                        <p class="text-muted small">Mengkonversi string menjadi notasi terenkripsi untuk menyembunyikan teks dan pesan sensitif.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Pengacakan Nama Variabel</strong>
+                                        <p class="text-muted small">Mengganti nama variabel, fungsi, dan kelas dengan nama acak yang tidak memiliki arti semantik.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Pengacakan Struktur</strong>
+                                        <p class="text-muted small">Mengacak struktur kode untuk mempersulit analisis aliran dan tujuan kode.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Penambahan Kode Junk</strong>
+                                        <p class="text-muted small">Menyisipkan kode "junk" yang tidak fungsional untuk mengaburkan logika sebenarnya dan membingungkan analisis kode.</p>
+                                    </li>
+                                </ul>
                             </div>
-                            
-                            <h4 class="mt-4">Code Example</h4>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Original Code</h5>
-                                    <pre class="bg-light p-3 rounded"><code>function getUserInfo($userId) {
-    // Fetch user data from database
-    $userData = fetchUserData($userId);
-    
-    // Format the user information
-    $userInfo = [
-        'name' => $userData['name'],
-        'email' => $userData['email'],
-        'role' => $userData['role']
-    ];
-    
-    return $userInfo;
-}</code></pre>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5>Obfuscated Code</h5>
-                                    <pre class="bg-dark text-light p-3 rounded"><code>function xKw_92js($a){$QxR=fetchUserData($a);$xRt5=array('name'=>$QxR['name'],'email'=>$QxR['email'],'role'=>$QxR['role']);$wer=rand(0,99);if($wer>50){$wer=$wer+5;}$ZxT='6'.rand(12,99);return $xRt5;}</code></pre>
+                        </div>
+                        <h4>Tingkat Obfuscation</h4>
+                        <p>ChunkShield menawarkan beberapa tingkat obfuscation:</p>
+                        <div class="row mt-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="card-title mb-0">Ringan</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Obfuscation dasar dengan penghapusan komentar dan kompresi kode.</p>
+                                        <p class="text-muted small">Ideal untuk: aplikasi sederhana dengan prioritas kinerja.</p>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div class="alert alert-info mt-4">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Note:</strong> While obfuscation makes your code difficult to understand, it's not impossible to reverse-engineer. That's why ChunkShield combines obfuscation with encryption and chunking for maximum protection.
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="card-title mb-0">Standar</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Obfuscation menengah dengan pengacakan nama dan beberapa enkripsi string.</p>
+                                        <p class="text-muted small">Ideal untuk: mayoritas aplikasi komersial.</p>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-danger text-white">
+                                        <h5 class="card-title mb-0">Maksimal</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Obfuscation ekstensif dengan semua teknik dan keamanan tambahan.</p>
+                                        <p class="text-muted small">Ideal untuk: aplikasi premium dan kode sensitif.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-lightbulb me-2"></i> <strong>Tip:</strong> Untuk keamanan maksimal, kombinasikan obfuscation dengan chunking dan lisensi.
                         </div>
                     </div>
                     
-                    <!-- Chunking Section -->
+                    <!-- Chunking -->
                     <div class="tab-pane fade" id="chunking" role="tabpanel" aria-labelledby="chunking-tab">
-                        <div class="doc-section">
-                            <h3>Chunking & Encryption</h3>
-                            <p>After obfuscation, your code is split into multiple chunks and each chunk is encrypted separately. This prevents anyone from accessing your complete source code even if they obtain some of the chunks.</p>
-                            
-                            <h4 class="mt-4">Chunking Process</h4>
-                            <ol>
-                                <li>Your obfuscated code is divided into multiple segments (chunks)</li>
-                                <li>Each chunk is compressed using GZIP for smaller size</li>
-                                <li>Chunks are encrypted using AES-256-CBC encryption</li>
-                                <li>Encrypted chunks are encoded with Base64 for safe storage</li>
-                                <li>Each chunk is saved as a separate file with a random name</li>
-                                <li>A metadata file is created to track chunk order and relationships</li>
-                            </ol>
-                            
-                            <h4 class="mt-4">Encryption Details</h4>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Algorithm</h5>
-                                            <p class="card-text">AES-256-CBC (Advanced Encryption Standard)</p>
-                                            <ul class="list-unstyled">
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> 256-bit key length</li>
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> Cipher Block Chaining mode</li>
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> Random Initialization Vector (IV)</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Security Features</h5>
-                                            <ul class="list-unstyled">
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> Unique encryption key for each project</li>
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> Hash verification for integrity checks</li>
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> Metadata protection</li>
-                                                <li><i class="fas fa-check-circle text-success me-2"></i> Secure key management</li>
-                                            </ul>
-                                        </div>
+                        <h3 class="mb-4">Chunking Kode</h3>
+                        <p>Chunking adalah teknik keamanan lanjutan yang memecah kode Anda menjadi beberapa potongan terenkripsi yang terpisah, membuat rekayasa balik hampir tidak mungkin.</p>
+                        
+                        <h4 class="mt-4">Cara Kerja Chunking</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <ol class="step-list">
+                                    <li>
+                                        <strong>Analisis Kode</strong>
+                                        <p class="text-muted small">Kode PHP Anda dianalisis dan persiapan awal dilakukan.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Fragmentasi Kode</strong>
+                                        <p class="text-muted small">Kode dibagi menjadi beberapa bagian (chunk) independen.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Enkripsi Chunk</strong>
+                                        <p class="text-muted small">Setiap chunk dienkripsi secara individual menggunakan AES-256-CBC.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Kompresi</strong>
+                                        <p class="text-muted small">Chunk dikompresi menggunakan gzip untuk mengurangi ukuran.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Penyebaran Chunk</strong>
+                                        <p class="text-muted small">Chunk disimpan secara terpisah dengan nama file acak.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Pembuatan Loader</strong>
+                                        <p class="text-muted small">File loader dibuat untuk menggabungkan dan menjalankan chunk.</p>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <h4>Keuntungan Chunking</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-shield-alt me-2"></i>Keamanan Ekstrem</h5>
+                                        <p>Metode ini menawarkan tingkat keamanan tertinggi. Hanya dengan memiliki semua chunk dan loader, kode dapat direkonstruksi.</p>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <h4 class="mt-4">File Structure</h4>
-                            <pre class="bg-light p-3 rounded"><code>protected_project/
-├── loader.php              # Main loader file
-└── chunks/                 # Directory containing encrypted chunks
-    ├── metadata.json       # Encrypted metadata about chunks
-    ├── a8f2c1d3.chunk      # Encrypted chunk 1
-    ├── b7e4d2c5.chunk      # Encrypted chunk 2
-    └── f9a3b2e1.chunk      # Encrypted chunk 3</code></pre>
-                            
-                            <div class="alert alert-warning mt-4">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Important:</strong> Always keep your encryption key secure. If an attacker obtains both your chunks and the encryption key, they could potentially decrypt your code.
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-random me-2"></i>Validasi Dinamis</h5>
+                                        <p>Loader dapat melakukan validasi ekstra terhadap lingkungan eksekusi.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-key me-2"></i>Kunci Per-Chunk</h5>
+                                        <p>Setiap chunk dienkripsi dengan kunci unik, menambah lapisan keamanan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-puzzle-piece me-2"></i>Interdependensi</h5>
+                                        <p>Chunk didesain dengan ketergantungan satu sama lain, mencegah eksekusi parsial.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i> <strong>Penting:</strong> Setelah chunking, pastikan untuk menyimpan file output dengan struktur yang utuh. Penghapusan satu chunk akan membuat seluruh kode tidak berfungsi.
+                        </div>
+                    </div>
+                    
+                    <!-- Loading -->
+                    <div class="tab-pane fade" id="loading" role="tabpanel" aria-labelledby="loading-tab">
+                        <h3 class="mb-4">Sistem Loader ChunkShield</h3>
+                        <p>Loader adalah komponen kunci dari sistem ChunkShield yang bertanggung jawab untuk memuat, mendekripsi, dan mengeksekusi kode yang dilindungi secara aman.</p>
+                        
+                        <h4 class="mt-4">Fungsi Loader</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <ul class="feature-list">
+                                    <li>
+                                        <strong>Pemuatan Chunk</strong>
+                                        <p class="text-muted small">Menemukan dan memuat semua chunk terenkripsi yang diperlukan.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Dekripsi</strong>
+                                        <p class="text-muted small">Mendekripsi chunk menggunakan algoritma dan kunci yang benar.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Validasi Integritas</strong>
+                                        <p class="text-muted small">Memverifikasi bahwa chunk tidak dirusak atau dimodifikasi.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Pemeriksaan Lingkungan</strong>
+                                        <p class="text-muted small">Memastikan kode berjalan di lingkungan yang valid dan diizinkan.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Anti-Debug</strong>
+                                        <p class="text-muted small">Mendeteksi dan mencegah upaya debugging atau analisis.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Eksekusi Aman</strong>
+                                        <p class="text-muted small">Menjalankan kode yang dilindungi dalam konteks yang aman.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h4>Jenis Loader</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="card-title mb-0">Loader Standar</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Loader dasar yang memuat dan menjalankan kode yang dilindungi.</p>
+                                        <p class="text-muted small mb-0">Fitur: Dekripsi, validasi checksum, eksekusi kode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-danger text-white">
+                                        <h5 class="card-title mb-0">Loader Terenkripsi</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Loader dengan lapisan keamanan tambahan, mempersulit ekstraksi kunci dekripsi.</p>
+                                        <p class="text-muted small mb-0">Fitur: Self-encrypting, anti-tampering, obfuscation lanjutan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mt-4">Mengamankan Loader</h4>
+                        <p>Loader adalah titik fokus bagi penyerang, jadi ChunkShield menerapkan beberapa teknik untuk mengamankannya:</p>
+                        <ul>
+                            <li><strong>Kunci Terselubung:</strong> Kunci dekripsi tersembunyi dalam loader dengan berbagai metode</li>
+                            <li><strong>Junk Eval:</strong> Blok eval palsu untuk mengaburkan logika sebenarnya</li>
+                            <li><strong>Self-Modifying Code:</strong> Kode yang memodifikasi dirinya sendiri saat runtime</li>
+                            <li><strong>Pengacakan Eksekusi:</strong> Urutan eksekusi yang tidak dapat diprediksi</li>
+                            <li><strong>Deteksi Tampering:</strong> Mekanisme untuk mendeteksi jika loader dimodifikasi</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-lightbulb me-2"></i> <strong>Tip:</strong> Untuk keamanan maksimal, selalu gunakan Loader Terenkripsi dan kombinasikan dengan validasi lisensi.
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Security -->
+                    <div class="tab-pane fade" id="advanced-security" role="tabpanel" aria-labelledby="advanced-security-tab">
+                        <h3 class="mb-4">Fitur Keamanan Lanjutan</h3>
+                        <p>ChunkShield menyediakan beberapa fitur keamanan lanjutan untuk melindungi kode Anda dari berbagai serangan dan teknik pembajakan.</p>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header bg-danger text-white">
+                                <h4 class="card-title mb-0"><i class="fas fa-bug-slash me-2"></i>Anti-Debug Protection</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Mencegah penyerang menggunakan debugger untuk menganalisis kode Anda selama eksekusi.</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="mt-3">Teknik yang Digunakan</h5>
+                                        <ul>
+                                            <li>Deteksi XDebug dan PHP debugger lainnya</li>
+                                            <li>Time-check debugging detection</li>
+                                            <li>Hook interception</li>
+                                            <li>Memory analysis</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="mt-3">Respon Anti-Debug</h5>
+                                        <ul>
+                                            <li>Pemutusan eksekusi</li>
+                                            <li>Kode self-corruption</li>
+                                            <li>Pengalihan ke kode honeypot</li>
+                                            <li>Logging upaya serangan</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header bg-danger text-white">
+                                <h4 class="card-title mb-0"><i class="fas fa-radiation me-2"></i>Mekanisme Self-Destruct</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Implementasi mekanisme yang akan merusak kode secara otomatis jika terdeteksi upaya pembajakan.</p>
+                                <h5 class="mt-3">Trigger Mekanisme</h5>
+                                <ul>
+                                    <li>Deteksi manipulasi file</li>
+                                    <li>Kegagalan validasi lingkungan</li>
+                                    <li>Perubahan file Loader</li>
+                                    <li>Perubahan struktur chunk</li>
+                                    <li>Upaya dump konten memori</li>
+                                </ul>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> <strong>Penting:</strong> Fitur self-destruct sangat kuat. Pastikan Anda memiliki backup kode asli sebelum implementasi.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header bg-danger text-white">
+                                <h4 class="card-title mb-0"><i class="fas fa-fingerprint me-2"></i>Fingerprinting & Licensi</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Sistem fingerprinting menghasilkan identifikasi unik untuk setiap instalasi dan memvalidasi lisensi.</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="mt-3">Parameter Fingerprinting</h5>
+                                        <ul>
+                                            <li>Server hardware ID</li>
+                                            <li>Nama domain dan path instalasi</li>
+                                            <li>Alamat IP server</li>
+                                            <li>Konfigurasi PHP</li>
+                                            <li>Database identifiers</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="mt-3">Jenis Validasi</h5>
+                                        <ul>
+                                            <li>Validasi lokal (file)</li>
+                                            <li>Validasi remote (API)</li>
+                                            <li>Validasi hybrid</li>
+                                            <li>Time-based validation</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header bg-danger text-white">
+                                <h4 class="card-title mb-0"><i class="fas fa-user-secret me-2"></i>Honeypot Traps</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Honeypot traps adalah teknik untuk mendeteksi dan mengalihkan penyerang dengan memberikan informasi palsu.</p>
+                                <h5 class="mt-3">Implementasi Honeypot</h5>
+                                <ul>
+                                    <li>Variabel & fungsi palsu dengan nama menarik</li>
+                                    <li>Komentar palsu yang terlihat seperti informasi penting</li>
+                                    <li>String "password" dan "key" palsu</li>
+                                    <li>Path file palsu untuk menipu analisis statis</li>
+                                    <li>Kode cacat yang terlihat seperti bagian asli</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-shield-alt me-2"></i> <strong>Rekomendasi:</strong> Untuk proyek komersial, sebaiknya terapkan minimal 3 lapisan keamanan lanjutan untuk perlindungan maksimal.
+                        </div>
+                    </div>
+                    
+                    <!-- Semi-Compiler -->
+                    <div class="tab-pane fade" id="semi-compiler" role="tabpanel" aria-labelledby="semi-compiler-tab">
+                        <h3 class="mb-4">Semi-Compiler ChunkShield</h3>
+                        <p>Semi-Compiler mengubah kode PHP Anda menjadi format "semi-compiled" yang jauh lebih sulit untuk didekompilasi dan direkayasa balik dibandingkan dengan kode PHP biasa.</p>
+                        
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-info-circle me-2"></i> <strong>Apa itu Semi-Compiling?</strong> Berbeda dengan compiled language seperti C++, PHP adalah bahasa yang diinterpretasi. Semi-compiling menggabungkan teknik-teknik canggih untuk menyembunyikan logika kode asli, meskipun tidak sepenuhnya mengubahnya menjadi bytecode.
+                        </div>
+                        
+                        <h4>5 Level Proteksi Semi-Compiler</h4>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="card-title mb-0">Level 1 - Tokenization</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Kode PHP diubah menjadi representasi token dan direkonstruksi dengan cara yang berbeda.</p>
+                                        <p class="text-muted small">Keamanan: <span class="text-success">★★☆☆☆</span></p>
+                                        <p class="text-muted small">Kinerja: <span class="text-success">★★★★★</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="card-title mb-0">Level 2 - Dynamic Evaluation</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Kode dienkripsi dan dievaluasi secara dinamis menggunakan kombinasi teknik eval yang kompleks.</p>
+                                        <p class="text-muted small">Keamanan: <span class="text-success">★★★☆☆</span></p>
+                                        <p class="text-muted small">Kinerja: <span class="text-success">★★★★☆</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="card-title mb-0">Level 3 - Control Flow Obfuscation</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Struktur kontrol dimodifikasi secara radikal untuk mencegah analisis statis dan pemahaman aliran program.</p>
+                                        <p class="text-muted small">Keamanan: <span class="text-success">★★★★☆</span></p>
+                                        <p class="text-muted small">Kinerja: <span class="text-success">★★★☆☆</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-danger text-white">
+                                        <h5 class="card-title mb-0">Level 4 - Virtual Machine</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Kode diubah menjadi bytecode kustom yang dijalankan oleh VM kecil yang tertanam dalam kode akhir.</p>
+                                        <p class="text-muted small">Keamanan: <span class="text-success">★★★★★</span></p>
+                                        <p class="text-muted small">Kinerja: <span class="text-success">★★☆☆☆</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-danger text-white">
+                                        <h5 class="card-title mb-0">Level 5 - Polymorphic Protection</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Kombinasi dari semua level sebelumnya plus kode polimorfik yang berubah setiap kali dieksekusi, setiap instance loader menjadi unik.</p>
+                                        <p>Ini adalah level perlindungan tertinggi yang menggunakan multiple teknik termasuk:</p>
+                                        <ul>
+                                            <li>Transformasi kode pada runtime</li>
+                                            <li>Metamorfik execution paths</li>
+                                            <li>Anti-decompilation multi-layer</li>
+                                            <li>Enkripsi lanjutan dengan kunci dinamis</li>
+                                            <li>Eksekusi hook yang terus berubah</li>
+                                        </ul>
+                                        <p class="text-muted small">Keamanan: <span class="text-success">★★★★★</span></p>
+                                        <p class="text-muted small">Kinerja: <span class="text-success">★☆☆☆☆</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i> <strong>Perhatian Kinerja:</strong> Level proteksi yang lebih tinggi umumnya menurunkan kinerja. Untuk kode yang memerlukan performa maksimal, gunakan Level 1-2. Untuk kode yang sangat sensitif, gunakan Level 4-5.
+                        </div>
+                    </div>
+                    
+                    <!-- Replit Guide -->
+                    <div class="tab-pane fade" id="replit-guide" role="tabpanel" aria-labelledby="replit-guide-tab">
+                        <h3 class="mb-4">Panduan Menjalankan dan Memelihara ChunkShield di Replit</h3>
+                        
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-info-circle me-2"></i> ChunkShield telah dioptimalkan khusus untuk berjalan di lingkungan Replit dengan performa dan keamanan maksimal.
+                        </div>
+                        
+                        <h4 class="mt-4"><i class="fas fa-play-circle me-2"></i>Menjalankan ChunkShield</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <ol class="step-list">
+                                    <li>
+                                        <strong>Menjalankan Server</strong>
+                                        <p>ChunkShield sudah dikonfigurasi dengan dua workflow otomatis:</p>
+                                        <ul>
+                                            <li><code>ChunkShield</code> - Menjalankan setup awal dan server PHP</li>
+                                            <li><code>run_chunkshield</code> - Menjalankan server PHP saja (lebih cepat)</li>
+                                        </ul>
+                                        <p>Klik tombol Run untuk memulai aplikasi. Server akan mulai pada port 5000.</p>
+                                    </li>
+                                    <li>
+                                        <strong>Mengakses Antarmuka Web</strong>
+                                        <p>Setelah server berjalan, klik tab "Webview" atau gunakan tombol "Open in new tab" untuk membuka ChunkShield di browser.</p>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-folder-open me-2"></i>Struktur Direktori</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p>Mengenal struktur direktori ChunkShield di Replit:</p>
+                                <ul>
+                                    <li>
+                                        <strong>ChunkShield/</strong> - Direktori utama
+                                        <ul>
+                                            <li><strong>chunks/</strong> - Direktori penyimpanan chunk sementara</li>
+                                            <li><strong>logs/</strong> - Log aplikasi dan error</li>
+                                            <li>
+                                                <strong>output/</strong> - File output hasil pengolahan
+                                                <ul>
+                                                    <li><strong>chunks/</strong> - Kode yang telah di-chunk</li>
+                                                    <li><strong>obfuscated/</strong> - Kode yang telah diobfuscate</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <strong>tools/</strong> - Komponen inti aplikasi
+                                                <ul>
+                                                    <li><strong>anti_debug.php</strong> - Proteksi anti-debugging</li>
+                                                    <li><strong>anti_crack.php</strong> - Proteksi anti-cracking</li>
+                                                    <li><strong>chunker.php</strong> - Engine chunking</li>
+                                                    <li><strong>obfuscator.php</strong> - Engine obfuscation</li>
+                                                    <li><strong>semi_compiler.php</strong> - Engine semi-compiler</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <strong>web/</strong> - Antarmuka web
+                                                <ul>
+                                                    <li><strong>assets/</strong> - File CSS, JS, dan gambar</li>
+                                                    <li><strong>views/</strong> - Template tampilan PHP</li>
+                                                    <li><strong>index.php</strong> - Entry point aplikasi web</li>
+                                                </ul>
+                                            </li>
+                                            <li><strong>config.php</strong> - File konfigurasi utama</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-wrench me-2"></i>Konfigurasi dan Penyesuaian</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p>Anda dapat menyesuaikan ChunkShield dengan mengedit beberapa file konfigurasi:</p>
+                                
+                                <h5 class="mt-3">1. Konfigurasi Utama (config.php)</h5>
+                                <p>File ini berisi pengaturan utama untuk semua fitur ChunkShield:</p>
+                                <ul>
+                                    <li><strong>DEBUG_MODE</strong> - Mode debugging (true/false)</li>
+                                    <li><strong>OBFUSCATE_*</strong> - Pengaturan obfuscation</li>
+                                    <li><strong>CHUNK_*</strong> - Pengaturan chunking</li>
+                                    <li><strong>ENCRYPTION_*</strong> - Pengaturan enkripsi</li>
+                                    <li><strong>SECURITY_*</strong> - Pengaturan keamanan</li>
+                                </ul>
+                                
+                                <h5 class="mt-3">2. Optimasi Kinerja (performance.php)</h5>
+                                <p>File ini berisi pengaturan untuk mengoptimalkan kinerja di Replit:</p>
+                                <ul>
+                                    <li><strong>CACHE_ENABLED</strong> - Mengaktifkan/menonaktifkan sistem cache</li>
+                                    <li><strong>FILE_CACHE_TTL</strong> - Waktu cache file dalam detik</li>
+                                    <li><strong>CHUNK_PROCESSING_MEMORY_LIMIT</strong> - Batas memori per operasi chunk</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-cloud-upload-alt me-2"></i>Penyimpanan dan Cadangan</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p>ChunkShield menyimpan semua file output di direktori <code>output/</code>. File ini tersimpan di Replit dan dapat diakses kapan saja.</p>
+                                
+                                <h5 class="mt-3">Praktik Terbaik untuk Penyimpanan:</h5>
+                                <ul>
+                                    <li>Secara berkala unduh file output penting sebagai cadangan</li>
+                                    <li>Jangan menyimpan terlalu banyak file output yang tidak digunakan</li>
+                                    <li>Hapus file log lama secara berkala untuk menghemat ruang</li>
+                                </ul>
+                                
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> <strong>Penting:</strong> Replit memiliki batas penyimpanan. Jika Anda menghasilkan banyak file besar, pertimbangkan untuk menghapus file lama atau mengunduh dan menghapusnya dari Replit.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-tachometer-alt me-2"></i>Pemantauan Kinerja</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p>ChunkShield menyertakan utilitas pemantauan kinerja bawaan:</p>
+                                <ul>
+                                    <li>Statistik cache hit/miss tersedia di log server</li>
+                                    <li>Informasi penggunaan memori ditampilkan (jika DEBUG_MODE aktif)</li>
+                                    <li>Waktu pemrosesan terdokumentasi untuk operasi berat</li>
+                                </ul>
+                                
+                                <p>Anda dapat melihat log sistem di direktori <code>logs/</code> untuk informasi lebih lanjut tentang kinerja.</p>
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-sync me-2"></i>Memperbarui ChunkShield</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p>Untuk memperbarui ChunkShield ke versi terbaru:</p>
+                                <ol>
+                                    <li>Clone repositori terbaru ke tempat terpisah</li>
+                                    <li>Salin file konfigurasi Anda (config.php) untuk digunakan kembali</li>
+                                    <li>Pindahkan output yang ingin Anda pertahankan ke instalasi baru</li>
+                                    <li>Jalankan versi baru dan verifikasi bahwa semuanya berfungsi</li>
+                                </ol>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Loader Section -->
-                    <div class="tab-pane fade" id="loader" role="tabpanel" aria-labelledby="loader-tab">
-                        <div class="doc-section">
-                            <h3>Polymorphic Loader</h3>
-                            <p>The loader is a PHP script that decrypts your chunked code at runtime and executes it. Each loader is uniquely generated with different internal structure to prevent signature detection.</p>
-                            
-                            <h4 class="mt-4">Loader Features</h4>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <ul class="list-group mb-4">
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-random text-primary me-3"></i>
-                                            <div>
-                                                <strong>Polymorphic Generation</strong>
-                                                <p class="mb-0 small ">Each loader has a unique structure</p>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-puzzle-piece text-primary me-3"></i>
-                                            <div>
-                                                <strong>Chunk Management</strong>
-                                                <p class="mb-0 small ">Loads and assembles chunks in correct order</p>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-shield-alt text-primary me-3"></i>
-                                            <div>
-                                                <strong>Integrity Verification</strong>
-                                                <p class="mb-0 small ">Ensures chunks haven't been tampered with</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-group mb-4">
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-fingerprint text-primary me-3"></i>
-                                            <div>
-                                                <strong>Environment Fingerprinting</strong>
-                                                <p class="mb-0 small ">Validates execution environment</p>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-code text-primary me-3"></i>
-                                            <div>
-                                                <strong>Junk Eval Blocks</strong>
-                                                <p class="mb-0 small ">Adds confusion to the loader code</p>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <i class="fas fa-clock text-primary me-3"></i>
-                                            <div>
-                                                <strong>Runtime Execution</strong>
-                                                <p class="mb-0 small ">Decrypts and runs code on demand</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            
-                            <h4 class="mt-4">How the Loader Works</h4>
-                            <ol>
-                                <li>When accessed, the loader first performs environment checks (if license protection is enabled)</li>
-                                <li>It then loads the list of chunks from metadata or from hardcoded information</li>
-                                <li>Each chunk is loaded from the <code>chunks/</code> directory</li>
-                                <li>Chunks are decrypted using the embedded encryption key</li>
-                                <li>The integrity of each chunk is verified using hash checks</li>
-                                <li>Decrypted chunks are combined in the correct order</li>
-                                <li>The assembled code is executed using PHP's <code>eval()</code> function</li>
-                            </ol>
-                            
-                            <div class="alert alert-info mt-4">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Note:</strong> The loader.php file and chunks/ directory must be kept together in the same relative location for the loader to work properly.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- License Section -->
-                    <div class="tab-pane fade" id="license" role="tabpanel" aria-labelledby="license-tab">
-                        <div class="doc-section">
-                            <h3>License Protection</h3>
-                            <p>License protection adds runtime verification to ensure your code only runs in authorized environments. This is optional but recommended for commercial applications.</p>
-                            
-                            <h4 class="mt-4">License Types</h4>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Restriction Type</th>
-                                            <th>Description</th>
-                                            <th>Example</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Domain</td>
-                                            <td>Restricts execution to specific domain names</td>
-                                            <td><code>example.com</code>, <code>client.org</code></td>
-                                        </tr>
-                                        <tr>
-                                            <td>IP Address</td>
-                                            <td>Limits execution to specific IP addresses or ranges</td>
-                                            <td><code>192.168.1.10</code>, <code>10.0.0.*</code></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Server Path</td>
-                                            <td>Allows execution only in specific directories</td>
-                                            <td><code>/var/www/client</code>, <code>/home/user/apps/*</code></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Time-Based</td>
-                                            <td>Sets an expiration date for the license</td>
-                                            <td>Valid from 2023-01-01 to 2024-01-01</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <h4 class="mt-4">License File Format</h4>
-                            <p>Licenses are stored as JSON files with the following structure:</p>
-                            <pre class="bg-light p-3 rounded"><code>{
-  "license_id": "cs_a7b8c9d0",
-  "customer_name": "Example Company",
-  "customer_email": "customer@example.com",
-  "valid_from": 1683905400,
-  "valid_to": 1715441400,
-  "domain": ["example.com", "client-site.com"],
-  "ip": ["192.168.1.*"],
-  "path": ["/var/www/html/*"],
-  "check_domain": true,
-  "check_ip": true,
-  "check_path": false,
-  "created_at": 1683905400
-}</code></pre>
-                            
-                            <h4 class="mt-4">Validation Process</h4>
-                            <p>When license validation is enabled, the loader performs these checks before executing your code:</p>
-                            <ol>
-                                <li>Verifies the current date is within the license validity period</li>
-                                <li>If domain restriction is enabled, checks if the current domain is authorized</li>
-                                <li>If IP restriction is enabled, validates the client's IP address</li>
-                                <li>If path restriction is enabled, ensures the script is executed from an allowed path</li>
-                            </ol>
-                            <p>If any check fails, the loader will show an error message and terminate execution.</p>
-                            
-                            <div class="alert alert-warning mt-4">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Important:</strong> While license protection adds a layer of security, determined attackers might attempt to modify the loader to bypass these checks. Always combine license protection with other security measures.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Deployment Section -->
-                    <div class="tab-pane fade" id="deployment" role="tabpanel" aria-labelledby="deployment-tab">
-                        <div class="doc-section">
-                            <h3>Deployment Guide</h3>
-                            <p>Follow these steps to deploy your protected PHP application on a web server.</p>
-                            
-                            <h4 class="mt-4">Deployment Steps</h4>
-                            <div class="accordion" id="deploymentAccordion">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Step 1: Download the Protected Files
-                                        </button>
-                                    </h2>
-                                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#deploymentAccordion">
-                                        <div class="accordion-body">
-                                            <p>After completing the protection process, download the ZIP file containing all protected files from the Output tab.</p>
-                                            <p>The ZIP file contains:</p>
-                                            <ul>
-                                                <li><code>loader.php</code> - The main entry point for your application</li>
-                                                <li><code>chunks/</code> directory - Contains all encrypted code chunks</li>
-                                                <li><code>chunks/metadata.json</code> - Information about chunk structure (encrypted)</li>
-                                                <li>License file (if created) - Contains license restrictions</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingTwo">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                            Step 2: Upload to Your Web Server
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#deploymentAccordion">
-                                        <div class="accordion-body">
-                                            <p>Upload the files to your web server using FTP, SFTP, or any file transfer method.</p>
-                                            <ul>
-                                                <li>Extract the ZIP file if you haven't already</li>
-                                                <li>Upload all files to the desired directory on your web server</li>
-                                                <li>Maintain the original directory structure</li>
-                                                <li>Ensure the <code>loader.php</code> file and <code>chunks/</code> directory remain in the same relative location</li>
-                                            </ul>
-                                            <div class="alert alert-info">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                You can rename the <code>loader.php</code> file to match your original file name if desired (e.g., <code>index.php</code>).
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingThree">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                            Step 3: Set File Permissions
-                                        </button>
-                                    </h2>
-                                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#deploymentAccordion">
-                                        <div class="accordion-body">
-                                            <p>Set the appropriate file permissions to ensure security while allowing your web server to read the files.</p>
-                                            <div class="table-responsive">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>File/Directory</th>
-                                                            <th>Recommended Permission</th>
-                                                            <th>Command (Linux/Unix)</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><code>loader.php</code></td>
-                                                            <td>644 (rw-r--r--)</td>
-                                                            <td><code>chmod 644 loader.php</code></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>chunks/</code> directory</td>
-                                                            <td>755 (rwxr-xr-x)</td>
-                                                            <td><code>chmod 755 chunks</code></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Chunk files</td>
-                                                            <td>644 (rw-r--r--)</td>
-                                                            <td><code>chmod 644 chunks/*</code></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingFour">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                            Step 4: Test Your Protected Application
-                                        </button>
-                                    </h2>
-                                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#deploymentAccordion">
-                                        <div class="accordion-body">
-                                            <p>Access your protected application through the loader file:</p>
+                    <!-- Troubleshooting -->
+                    <div class="tab-pane fade" id="troubleshooting" role="tabpanel" aria-labelledby="troubleshooting-tab">
+                        <h3 class="mb-4">Troubleshooting dan FAQ</h3>
+                        
+                        <div class="accordion" id="troubleshootingAccordion">
+                            <!-- Server Issues -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingServer">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServer" aria-expanded="true" aria-controls="collapseServer">
+                                        <i class="fas fa-server me-2"></i> Masalah Server di Replit
+                                    </button>
+                                </h2>
+                                <div id="collapseServer" class="accordion-collapse collapse show" aria-labelledby="headingServer" data-bs-parent="#troubleshootingAccordion">
+                                    <div class="accordion-body">
+                                        <div class="troubleshooting-item">
+                                            <h5>Server Tidak Mau Mulai</h5>
+                                            <p><strong>Penyebab:</strong> Port yang sudah digunakan, kesalahan PHP, atau masalah izin file.</p>
+                                            <p><strong>Solusi:</strong></p>
                                             <ol>
-                                                <li>Navigate to the URL of your loader file (e.g., <code>https://example.com/loader.php</code>)</li>
-                                                <li>Verify that your application works correctly</li>
-                                                <li>If you've enabled license restrictions, ensure they're working as expected</li>
+                                                <li>Restart Replit dengan menghentikan semua proses</li>
+                                                <li>Periksa log untuk error spesifik di tab Console</li>
+                                                <li>Pastikan tidak ada workflow lain yang berjalan di port yang sama</li>
+                                                <li>Verifikasi bahwa setup.sh memiliki izin eksekusi</li>
                                             </ol>
-                                            <div class="alert alert-warning">
-                                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                                If you encounter any issues, check the server error logs for details about what might be going wrong.
-                                            </div>
+                                        </div>
+                                        
+                                        <div class="troubleshooting-item mt-4">
+                                            <h5>Server Berjalan Lambat</h5>
+                                            <p><strong>Penyebab:</strong> Penggunaan memori yang tinggi, cache tidak efisien, atau terlalu banyak file di direktori output.</p>
+                                            <p><strong>Solusi:</strong></p>
+                                            <ol>
+                                                <li>Aktifkan optimasi cache di performance.php</li>
+                                                <li>Hapus file output lama yang tidak digunakan</li>
+                                                <li>Kurangi CHUNK_PROCESSING_MEMORY_LIMIT jika memungkinkan</li>
+                                                <li>Matikan DEBUG_MODE di config.php</li>
+                                            </ol>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <h4 class="mt-4">Integration with Existing Applications</h4>
-                            <p>To integrate protected code into a larger application:</p>
-                            <ol>
-                                <li>Place the loader.php and chunks/ directory in your application</li>
-                                <li>Include the loader file where you need the protected functionality:
-                                    <pre class="bg-light p-3 rounded mt-2"><code>&lt;?php
-// Include the protected code
-include('path/to/loader.php');
-
-// Now you can use functions from the protected code
-$result = protected_function($param);
-?&gt;</code></pre>
-                                </li>
-                            </ol>
-                            
-                            <div class="alert alert-info mt-4">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Note:</strong> For optimal protection, consider protecting your entire application rather than just portions of it. This provides a more comprehensive security solution.
+                            <!-- Processing Issues -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingProcessing">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProcessing" aria-expanded="false" aria-controls="collapseProcessing">
+                                        <i class="fas fa-cogs me-2"></i> Masalah Pengolahan Kode
+                                    </button>
+                                </h2>
+                                <div id="collapseProcessing" class="accordion-collapse collapse" aria-labelledby="headingProcessing" data-bs-parent="#troubleshootingAccordion">
+                                    <div class="accordion-body">
+                                        <div class="troubleshooting-item">
+                                            <h5>Error Saat Obfuscation</h5>
+                                            <p><strong>Penyebab:</strong> Syntax PHP yang tidak valid, penggunaan konstruksi yang tidak didukung, atau batas memori terlampaui.</p>
+                                            <p><strong>Solusi:</strong></p>
+                                            <ol>
+                                                <li>Periksa kode sumber untuk syntax error</li>
+                                                <li>Kurangi ukuran file yang diproses</li>
+                                                <li>Matikan beberapa opsi obfuscation yang lebih intensif di config.php</li>
+                                                <li>Periksa log untuk error spesifik</li>
+                                            </ol>
+                                        </div>
+                                        
+                                        <div class="troubleshooting-item mt-4">
+                                            <h5>Chunking Gagal</h5>
+                                            <p><strong>Penyebab:</strong> Masalah izin direktori, penggunaan memori tinggi, atau kode sumber yang terlalu besar.</p>
+                                            <p><strong>Solusi:</strong></p>
+                                            <ol>
+                                                <li>Pastikan direktori chunks/ dan output/ memiliki izin tulis</li>
+                                                <li>Tingkatkan CHUNK_PROCESSING_MEMORY_LIMIT di config.php</li>
+                                                <li>Pecah kode sumber besar menjadi file yang lebih kecil</li>
+                                                <li>Verifikasi bahwa kode sumber valid dan dapat dieksekusi</li>
+                                            </ol>
+                                        </div>
+                                        
+                                        <div class="troubleshooting-item mt-4">
+                                            <h5>Kode Terproteksi Tidak Berjalan</h5>
+                                            <p><strong>Penyebab:</strong> Kesalahan dekripsi, chunk yang hilang, atau konflik dengan environment.</p>
+                                            <p><strong>Solusi:</strong></p>
+                                            <ol>
+                                                <li>Pastikan semua chunk termasuk dalam deployment</li>
+                                                <li>Verifikasi bahwa struktur direktori sama seperti saat pembuatan</li>
+                                                <li>Periksa apakah versi PHP target kompatibel dengan kode yang dilindungi</li>
+                                                <li>Gunakan opsi validasi otomatis saat membuat kode terproteksi</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ Section -->
-                    <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">
-                        <div class="doc-section">
-                            <h3>Frequently Asked Questions</h3>
                             
-                            <div class="accordion" id="faqAccordion">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqOne">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseOne" aria-expanded="true" aria-controls="faqCollapseOne">
-                                            Is ChunkShield 100% uncrackable?
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapseOne" class="accordion-collapse collapse show" aria-labelledby="faqOne" data-bs-parent="#faqAccordion">
-                                        <div class="accordion-body">
-                                            <p>No code protection system can guarantee 100% security against determined attackers with unlimited time and resources. However, ChunkShield combines multiple layers of protection (obfuscation, encryption, chunking, and license validation) to make reverse-engineering extremely difficult and time-consuming.</p>
-                                            <p>The goal is to make recovering your original code so challenging that it's not worth the effort for most potential attackers.</p>
+                            <!-- Output Issues -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOutput">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOutput" aria-expanded="false" aria-controls="collapseOutput">
+                                        <i class="fas fa-file-export me-2"></i> Masalah Output dan File
+                                    </button>
+                                </h2>
+                                <div id="collapseOutput" class="accordion-collapse collapse" aria-labelledby="headingOutput" data-bs-parent="#troubleshootingAccordion">
+                                    <div class="accordion-body">
+                                        <div class="troubleshooting-item">
+                                            <h5>Tidak Dapat Mengunduh Output</h5>
+                                            <p><strong>Penyebab:</strong> Masalah izin file, kesalahan PHP, atau batasan browser.</p>
+                                            <p><strong>Solusi:</strong></p>
+                                            <ol>
+                                                <li>Gunakan tombol "Download" bawaan dari interface</li>
+                                                <li>Periksa apakah file output ada di direktori yang benar</li>
+                                                <li>Hapus cache browser dan coba lagi</li>
+                                                <li>Periksa log untuk error spesifik</li>
+                                            </ol>
+                                        </div>
+                                        
+                                        <div class="troubleshooting-item mt-4">
+                                            <h5>File Output Rusak</h5>
+                                            <p><strong>Penyebab:</strong> Penghentian proses yang tidak tepat, masalah disk, atau bug dalam proses enkripsi.</p>
+                                            <p><strong>Solusi:</strong></p>
+                                            <ol>
+                                                <li>Proses ulang kode sumber dengan opsi yang sama</li>
+                                                <li>Pastikan Replit memiliki ruang disk yang cukup</li>
+                                                <li>Periksa log untuk error selama pemrosesan</li>
+                                                <li>Gunakan fitur validasi otomatis untuk memastikan output berfungsi</li>
+                                            </ol>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqTwo">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseTwo" aria-expanded="false" aria-controls="faqCollapseTwo">
-                                            Will protected code run slower?
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo" data-bs-parent="#faqAccordion">
-                                        <div class="accordion-body">
-                                            <p>There is some performance overhead in the initial loading of the protected code, as the loader needs to decrypt and assemble the chunks before execution. However, once the code is loaded and running, the performance impact is minimal.</p>
-                                            <p>For most applications, this initial loading time is negligible (usually a fraction of a second). The actual running code maintains nearly the same performance as the original code.</p>
+                            </div>
+                            
+                            <!-- FAQ -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFAQ">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFAQ" aria-expanded="false" aria-controls="collapseFAQ">
+                                        <i class="fas fa-question-circle me-2"></i> Pertanyaan yang Sering Diajukan (FAQ)
+                                    </button>
+                                </h2>
+                                <div id="collapseFAQ" class="accordion-collapse collapse" aria-labelledby="headingFAQ" data-bs-parent="#troubleshootingAccordion">
+                                    <div class="accordion-body">
+                                        <div class="faq-item">
+                                            <h5>Apakah ChunkShield mendukung semua versi PHP?</h5>
+                                            <p>ChunkShield dikembangkan dan diuji pada PHP 7.4 dan lebih tinggi. Dukungan untuk PHP versi lebih rendah tidak dijamin dan mungkin memerlukan penyesuaian. Untuk hasil terbaik, gunakan PHP 8.0+.</p>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqThree">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseThree" aria-expanded="false" aria-controls="faqCollapseThree">
-                                            What PHP versions are supported?
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree" data-bs-parent="#faqAccordion">
-                                        <div class="accordion-body">
-                                            <p>ChunkShield is compatible with PHP 5.6 and above, including PHP 7.x and PHP 8.x. The system is designed to work with modern PHP codebases while maintaining backward compatibility with slightly older versions.</p>
-                                            <p>For optimal security and performance, we recommend using PHP 7.4 or newer.</p>
+                                        
+                                        <div class="faq-item mt-4">
+                                            <h5>Apakah kode yang dilindungi ChunkShield 100% aman dari pembajakan?</h5>
+                                            <p>Meskipun ChunkShield menerapkan berbagai teknik keamanan canggih, tidak ada sistem perlindungan kode yang 100% tidak dapat ditembus. ChunkShield dirancang untuk membuat rekayasa balik menjadi sangat sulit, memakan waktu, dan mahal, sehingga penyerang potensial memilih target yang lebih mudah.</p>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqFour">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseFour" aria-expanded="false" aria-controls="faqCollapseFour">
-                                            Can I protect WordPress plugins or themes?
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapseFour" class="accordion-collapse collapse" aria-labelledby="faqFour" data-bs-parent="#faqAccordion">
-                                        <div class="accordion-body">
-                                            <p>Yes, you can protect WordPress plugins and themes with ChunkShield. However, there are some considerations:</p>
+                                        
+                                        <div class="faq-item mt-4">
+                                            <h5>Bagaimana pengaruh ChunkShield terhadap kinerja aplikasi?</h5>
+                                            <p>Dampak kinerja tergantung pada metode perlindungan yang dipilih:</p>
                                             <ul>
-                                                <li>It's best to protect the entire plugin/theme rather than individual files</li>
-                                                <li>You'll need to modify the main plugin file to use the loader</li>
-                                                <li>Some WordPress hooks and filters might require special handling</li>
+                                                <li>Obfuscation dasar: Hampir tidak ada dampak kinerja</li>
+                                                <li>Chunking standar: Overhead 1-3% pada sebagian besar aplikasi</li>
+                                                <li>Perlindungan lanjutan: Overhead 5-15% tergantung pada kompleksitas</li>
+                                                <li>Semi-compiler level 4-5: Overhead 15-30% untuk keamanan maksimal</li>
                                             </ul>
-                                            <p>For complex WordPress plugins with many files, you may need to protect each functional component separately and then create a main loader that assembles everything.</p>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqFive">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseFive" aria-expanded="false" aria-controls="faqCollapseFive">
-                                            What happens if the license expires?
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapseFive" class="accordion-collapse collapse" aria-labelledby="faqFive" data-bs-parent="#faqAccordion">
-                                        <div class="accordion-body">
-                                            <p>If you've set an expiration date for the license and that date passes, the loader will display an error message like "License has expired" and will not execute the protected code.</p>
-                                            <p>To extend the license, you can either:</p>
-                                            <ol>
-                                                <li>Create a new license file with an extended expiration date</li>
-                                                <li>Modify the existing license file to update the expiration date</li>
-                                                <li>Generate a new protected package with updated license settings</li>
-                                            </ol>
+                                        
+                                        <div class="faq-item mt-4">
+                                            <h5>Dapatkah ChunkShield melindungi framework PHP populer?</h5>
+                                            <p>ChunkShield dapat melindungi kode khusus dalam framework, tetapi tidak seluruh framework. Pendekatan terbaik adalah melindungi kode bisnis kustom, plugin, atau modul yang Anda kembangkan di dalam framework, bukan seluruh codebase framework.</p>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqSix">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseSix" aria-expanded="false" aria-controls="faqCollapseSix">
-                                            Can I update protected code after deployment?
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapseSix" class="accordion-collapse collapse" aria-labelledby="faqSix" data-bs-parent="#faqAccordion">
-                                        <div class="accordion-body">
-                                            <p>Yes, you can update protected code by following these steps:</p>
-                                            <ol>
-                                                <li>Make changes to your original source code</li>
-                                                <li>Run the code through ChunkShield to create a new protected package</li>
-                                                <li>Replace the old protected files on your server with the new ones</li>
-                                            </ol>
-                                            <p>Each protection process creates a completely new set of files, so you'll need to replace all components (loader and chunks) when updating.</p>
+                                        
+                                        <div class="faq-item mt-4">
+                                            <h5>Bagaimana cara menghubungi dukungan untuk ChunkShield?</h5>
+                                            <p>Untuk dukungan dan bantuan dengan ChunkShield, silakan kunjungi repositori GitHub atau hubungi pengembang melalui email support. Tim dukungan akan membantu Anda menyelesaikan masalah dan mengoptimalkan perlindungan kode PHP Anda.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -621,3 +837,32 @@ $result = protected_function($param);
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show the active tab based on URL hash
+    const hash = window.location.hash;
+    if (hash) {
+        const tab = document.querySelector(`a[href="${hash}"]`);
+        if (tab) {
+            const bsTab = new bootstrap.Tab(tab);
+            bsTab.show();
+        }
+    }
+    
+    // Add hash to URL when tab is changed
+    const tabLinks = document.querySelectorAll('#docs-nav a');
+    tabLinks.forEach(link => {
+        link.addEventListener('shown.bs.tab', function(e) {
+            window.location.hash = e.target.getAttribute('href');
+        });
+    });
+    
+    // Display welcome toast
+    if (window.toast) {
+        window.toast.info('Selamat datang di dokumentasi ChunkShield! Silakan pilih topik untuk mempelajari lebih lanjut.', 'Dokumentasi', {
+            duration: 8000
+        });
+    }
+});
+</script>

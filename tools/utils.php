@@ -24,6 +24,18 @@ function generate_random_string($length, $chars = '0123456789abcdefghijklmnopqrs
 }
 
 /**
+ * Generates a random encryption key
+ * 
+ * @param int $length Length of the key (default: 32)
+ * @return string Random encryption key
+ */
+function generate_random_key($length = 32) {
+    // Use more complex character set for encryption keys
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-={}[]|:;<>,.?/~';
+    return generate_random_string($length, $chars);
+}
+
+/**
  * Generates a random variable name
  * 
  * @param int $length Length of the variable name (default: random between 5-15)
